@@ -1,0 +1,36 @@
+'use strict';
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb://localhost:27017/";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+const db ='agromonitor';
+const colle = 'vehicles';
+
+class Model {
+    constructor () {}
+
+    create () {
+
+    }
+    read () {
+        client.connect(err => {
+            if(err) console.error(err);
+            const coll = client.db(`${db}`).collection(`${colle}`);
+            coll.findOne(function(err, doc){
+                console.log(doc);
+                client.close();
+            });
+        });
+    }
+    update () {
+
+    }
+    delete () {
+
+    }
+}
+
+function createModel (options) {
+    return new Model(options);
+}
+module.exports.createModel = createModel;
