@@ -25,6 +25,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/api', vehiclesRoute);
 app.use(vehiclesRoute);
 
 app.listen(PORT, function(){

@@ -33,4 +33,5 @@ class Model {
 function createModel (options) {
     return new Model(options);
 }
+
 module.exports.createModel = createModel;
