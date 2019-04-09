@@ -19,9 +19,14 @@ class VehiclesHandler {
     //         })
     //         .catch(err => throw err;
     // }
-    async handlePost (requestBody) {
-        const result = await vehiclesModel.create(requestBody);
-        return result;
+     handlePost (req, res) {
+        if(!req.body) return res.sendStatus(400);
+
+        let postResult = async (reqBody) => {
+            const result = await vehiclesModel.create(reqBody);
+            return result;
+        }
+        postResult(req.body).then(result => res.send(result)).catch(err => console.error(err))
     }
 }
 

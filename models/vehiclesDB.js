@@ -7,6 +7,8 @@ const dbName ='agromonitor';
 const collectionName = 'vehicles';
 
 
+
+
 class Model {
     constructor () {}
 
@@ -27,8 +29,8 @@ class Model {
     // }
 
     async create (document) {
-        const connection = await client.connect();
-        let collection = await connection.db(`${dbName}`).collection(`${collectionName}`);
+        // let connection = await client.connect();
+        let collection = await client.db(`${dbName}`).collection(`${collectionName}`);
         return collection.insertOne(document).then(result => result.ops[0]);
     }
     // read () {
