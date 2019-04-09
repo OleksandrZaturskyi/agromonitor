@@ -26,7 +26,12 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', vehiclesRoute);
-app.use(vehiclesRoute);
+
+// Error 404 handler
+
+app.use((req, res, next) => {
+    res.status(404).send('Not found');
+});
 
 app.listen(PORT, function(){
     console.log(`Server has started at port ${PORT}`);

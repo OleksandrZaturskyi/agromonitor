@@ -4,30 +4,43 @@ const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb://localhost:27017/";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 const dbName ='agromonitor';
-const colName = 'vehicles';
+const collectionName = 'vehicles';
+
 
 class Model {
     constructor () {}
 
-    create () {
+    // create (document) {
+    //     client.connect((err, client) => {
+    //         if (err) return console.log(err);
+    //
+    //         const collection = client.db(`${dbName}`).collection(`${collectionName}`);
+    //         collection.insertOne(document, (err, results) => {
+    //
+    //             if (err) return console.log(err);
+    //
+    //             console.log(results.ops);
+    //
+    //             client.close();
+    //         });
+    //     });
+    // }
 
+    async create (document) {
+        const connection = await client.connect();
+        let collection = await connection.db(`${dbName}`).collection(`${collectionName}`);
+        return collection.insertOne(document).then(result => result.ops[0]);
     }
-    read () {
-        client.connect(err => {
-            if(err) console.error(err);
-            const coll = client.db(`${dbName}`).collection(`${colName}`);
-            coll.findOne(function(err, doc){
-                console.log(doc);
-                client.close();
-            });
-        });
-    }
-    update () {
-
-    }
-    delete () {
-
-    }
+    // read () {
+    //     client.connect(err => {
+    //         if(err) console.error(err);
+    //         const coll = client.db(`${dbName}`).collection(`${collectionName}`);
+    //         coll.findOne(function(err, doc){
+    //             console.log(doc);
+    //             client.close();
+    //         });
+    //     });
+    // }
 }
 
 function createModel (options) {
