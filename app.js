@@ -4,7 +4,12 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
-const morgan = require('morgan');
+const morgan = require('morgan')
+
+// Connect to DB
+const dbClient = require('./dbConnect').client;
+dbClient.then(result => console.log(result)).catch(err => console.error(err));
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +22,7 @@ const vehiclesRoute = require('./routes/vehicles');
 app.use(morgan('combined', {stream: logStream}));
 
 app.use(bodyParser.json());
+
 
 app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
@@ -31,6 +37,12 @@ app.use('/api', vehiclesRoute);
 
 app.use((req, res, next) => {
     res.status(404).send('Not found');
+});
+
+//Error handler
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
 });
 
 app.listen(PORT, function(){

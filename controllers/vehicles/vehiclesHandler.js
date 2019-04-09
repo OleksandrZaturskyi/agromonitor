@@ -23,10 +23,12 @@ class VehiclesHandler {
         if(!req.body) return res.sendStatus(400);
 
         let postResult = async (reqBody) => {
-            const result = await vehiclesModel.create(reqBody);
-            return result;
-        }
-        postResult(req.body).then(result => res.send(result)).catch(err => console.error(err))
+            return await vehiclesModel.create(reqBody);
+
+        };
+        postResult(req.body)
+            .then(result => res.json(result))
+            .catch(err => console.error(err))
     }
 }
 

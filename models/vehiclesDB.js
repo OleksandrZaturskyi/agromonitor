@@ -1,13 +1,7 @@
 'use strict';
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://localhost:27017/";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-const dbName ='agromonitor';
+const dbClient = require('../dbConnect').client;
 const collectionName = 'vehicles';
-
-
-
 
 class Model {
     constructor () {}
@@ -29,9 +23,12 @@ class Model {
     // }
 
     async create (document) {
-        // let connection = await client.connect();
-        let collection = await client.db(`${dbName}`).collection(`${collectionName}`);
-        return collection.insertOne(document).then(result => result.ops[0]);
+        let db = await dbClient;
+        let collection = await db.collection(`${collectionName}`);
+
+        return collection.insertOne(document)
+            .then(result => result.ops[0])
+            .catch(err => console.error(err));
     }
     // read () {
     //     client.connect(err => {
