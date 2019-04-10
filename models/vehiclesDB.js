@@ -50,13 +50,9 @@ class Model {
     async delete (id) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
-<<<<<<< HEAD
         let collection = await client.db('agromonitor').collection(this.collectionName);
-
+        
         return collection.deleteOne({"_id": new mongo.ObjectId(id)})
-=======
-        let collection = await client.db('agromonitor').collection(this.collectionName)
->>>>>>> develop
             .then(result => result.result)
             .catch(err => console.error(err));  
     }
