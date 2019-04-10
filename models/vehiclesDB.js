@@ -1,29 +1,35 @@
 'use strict';
 
-const dbClient = require('../dbConnect').dbClient;
-const collectionName = 'vehicles';
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb://localhost:27017/";
+
 
 class Model {
-    constructor () {}
+    constructor (name) {
+        this.collectionName = name;
+    }
 
     async create (document) {
-        let db = await dbClient;
-        let collection = await db.collection(`${collectionName}`);
+        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
+                .then(client => client).catch(err => console.error(err));
+        let collection = await client.db('agromonitor').collection(this.collectionName);
 
         return collection.insertOne(document)
-            .then(result => result.ops[0])
+            .then(result => {
+                client.close();
+                return result.ops[0]})
             .catch(err => console.error(err));
     }
-    // read () {
-    //     client.connect(err => {
-    //         if(err) console.error(err);
-    //         const coll = client.db(`${dbName}`).collection(`${collectionName}`);
-    //         coll.findOne(function(err, doc){
-    //             console.log(doc);
-    //             client.close();
-    //         });
-    //     });
-    // }
+
+    async read (id) {
+        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
+            .then(client => client).catch(err => console.error(err));
+        let collection = await client.db('agromonitor').collection(this.collectionName);
+
+        return collection.find().toArray()
+                .then(result => result)
+                .catch(err => console.error(err));
+    }
 }
 
 function createModel (options) {

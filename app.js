@@ -6,10 +6,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-// Connect to DB
-const dbClient = require('./dbConnect').dbClient;
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const logStream = fs.createWriteStream(path.join(__dirname, 'requestLog.log'));
@@ -23,6 +19,7 @@ app.use(morgan('combined', {stream: logStream}));
 app.use(bodyParser.json());
 
 app.use('/api/vehicles', vehiclesRoute);
+
 
 // Error 404 handler
 

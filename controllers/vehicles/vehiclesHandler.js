@@ -1,6 +1,7 @@
 'use strict';
 
 const vehiclePostService = require('../../services/vehiclePostService');
+const vehicleGetService = require('../../services/vehicleGetService');
 
 
 
@@ -35,6 +36,13 @@ class VehiclesHandler {
         if (checkFields.length > 0) return false;
         return true;
     }
+
+    handleGet (req, res) {
+        let getResult = vehicleGetService.getData();
+        getResult.then(result => res.json(result))
+            .catch(err => console.error(err))
+    }
+
 }
 
 function createHandler (options) {
