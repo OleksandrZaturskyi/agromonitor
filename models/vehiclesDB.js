@@ -1,6 +1,7 @@
 'use strict';
 
-const MongoClient = require('mongodb').MongoClient;
+const mongo = require('mongodb');
+const MongoClient = mongo.MongoClient;
 const uri = "mongodb://localhost:27017/";
 
 
@@ -31,24 +32,24 @@ class Model {
                 .catch(err => console.error(err));
     }
 
-    async update (document, updatedDocument) {
+    async update (id, data) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
-        return collection.updateOne(document, updatedDocument)
+        return collection.updateOne({"_id": new mongo.ObjectId(id)}, {$set: data})
             .then(result => result.ops[0])
             .catch(err => console.error(err));
     }
 
-    async delete (document) {
+    async delete (id) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
-        return collection.deleteOne(document)
+        return collection.deleteOne({"_id": new mongo.ObjectId(id)})
             .then(result => result.result)
-            .catch(err => console.error(err));
+            .catch(err => console.error(err));  
     }
 }
 

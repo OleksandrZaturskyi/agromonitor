@@ -19,14 +19,12 @@ router.get('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
+    console.log(req.url);
     handler.handlePut(req, res);
 });
 
 router.delete('/:id', (req, res) => {
     handler.handleDelete(req, res);
 });
-// router.get
-// router.put
-// router.delete
 
 module.exports = router;

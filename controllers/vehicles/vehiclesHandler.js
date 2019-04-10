@@ -46,23 +46,14 @@ class VehiclesHandler {
     }
 
     handleDelete (req, res) {
-        let deleteResult = async (reqBody) => {
-            return await vehicleDeleteService.deleteData(reqBody);
-
-        };
-        deleteResult(req.body)
+        vehicleDeleteService.deleteData(req.params.id)
             .then(result => res.json(result))
             .catch(err => console.error(err))
     }
 
     handlePut (req, res) {
-        if(!this.__isValidDocument(req.body)) return res.status(400).send('Missing required fields');
-
-        let putResult = async (reqBody) => {
-            return await vehiclePutService.updateData(reqBody);
-
-        };
-        putResult(req.body)
+        console.log(req);
+        vehiclePutService.updateData(req.params.id, req.body)
             .then(result => res.json(result))
             .catch(err => console.error(err))
     }
