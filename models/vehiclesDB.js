@@ -30,6 +30,26 @@ class Model {
                 .then(result => result)
                 .catch(err => console.error(err));
     }
+
+    async update (document, updatedDocument) {
+        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
+            .then(client => client).catch(err => console.error(err));
+        let collection = await client.db('agromonitor').collection(this.collectionName);
+
+        return collection.updateOne(document, updatedDocument)
+            .then(result => result.ops[0])
+            .catch(err => console.error(err));
+    }
+
+    async delete (document) {
+        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
+            .then(client => client).catch(err => console.error(err));
+        let collection = await client.db('agromonitor').collection(this.collectionName);
+
+        return collection.deleteOne(document)
+            .then(result => result.result)
+            .catch(err => console.error(err));
+    }
 }
 
 function createModel (options) {
