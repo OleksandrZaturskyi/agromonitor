@@ -10,13 +10,12 @@ router.post('/', (req, res) => {
     handler.handlePost(req, res);
 });
 router.get('/', (req, res) => {
-    console.log(req.url);
     handler.handleGet(req, res);
 });
 router.get('/:id', (req, res) => {
-    console.log(req.url);
     handler.handleGet(req, res);
 });
+
 
 router.put('/:id', (req, res) => {
     console.log(req.url);

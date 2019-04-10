@@ -15,6 +15,9 @@ class Model {
                 .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
+        let lastDoc = await collection.find().sort({"_id" : -1}).limit(1).toArray();
+        document._id = lastDoc.length ? lastDoc[0]._id + 1 : 0;
+
         return collection.insertOne(document)
             .then(result => {
                 client.close();
@@ -22,14 +25,16 @@ class Model {
             .catch(err => console.error(err));
     }
 
-    async read (id) {
+    async read (filter) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
-        return collection.find().toArray()
-                .then(result => result)
-                .catch(err => console.error(err));
+        return collection.find(filter).toArray()
+                .then(result => {
+                  client.close();
+                  return  result.length ? result : 'data not found';
+                }).catch(err => console.error(err));
     }
 
     async update (id, data) {
@@ -45,9 +50,13 @@ class Model {
     async delete (id) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
+<<<<<<< HEAD
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
         return collection.deleteOne({"_id": new mongo.ObjectId(id)})
+=======
+        let collection = await client.db('agromonitor').collection(this.collectionName)
+>>>>>>> develop
             .then(result => result.result)
             .catch(err => console.error(err));  
     }
