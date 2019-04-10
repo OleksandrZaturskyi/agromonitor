@@ -13,9 +13,7 @@ const vehicleDeleteService = require('../../services/vehicleDeleteService');
 class VehiclesHandler {
     constructor () {}
 
-    // handleGet () {
-    //     vehiclesModel.read();
-    // }
+
 
      handlePost (req, res) {
         if(!this.__isValidDocument(req.body)) return res.status(400).send('Missing required fields');
@@ -40,7 +38,7 @@ class VehiclesHandler {
     }
 
     handleGet (req, res) {
-        let getResult = vehicleGetService.getData();
+        let getResult = vehicleGetService.getData(req.params);
         getResult.then(result => res.json(result))
             .catch(err => console.error(err))
     }
