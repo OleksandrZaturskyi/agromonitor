@@ -4,11 +4,10 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
-const morgan = require('morgan')
+const morgan = require('morgan');
 
 // Connect to DB
-const dbClient = require('./dbConnect').client;
-dbClient.then(result => console.log(result)).catch(err => console.error(err));
+const dbClient = require('./dbConnect').dbClient;
 
 
 const app = express();
@@ -23,15 +22,7 @@ app.use(morgan('combined', {stream: logStream}));
 
 app.use(bodyParser.json());
 
-
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
-
-app.use('/api', vehiclesRoute);
+app.use('/api/vehicles', vehiclesRoute);
 
 // Error 404 handler
 

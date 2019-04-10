@@ -1,26 +1,10 @@
 'use strict';
 
-const dbClient = require('../dbConnect').client;
+const dbClient = require('../dbConnect').dbClient;
 const collectionName = 'vehicles';
 
 class Model {
     constructor () {}
-
-    // create (document) {
-    //     client.connect((err, client) => {
-    //         if (err) return console.log(err);
-    //
-    //         const collection = client.db(`${dbName}`).collection(`${collectionName}`);
-    //         collection.insertOne(document, (err, results) => {
-    //
-    //             if (err) return console.log(err);
-    //
-    //             console.log(results.ops);
-    //
-    //             client.close();
-    //         });
-    //     });
-    // }
 
     async create (document) {
         let db = await dbClient;

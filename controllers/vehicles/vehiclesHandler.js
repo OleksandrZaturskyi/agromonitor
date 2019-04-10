@@ -1,8 +1,10 @@
 'use strict';
 
-const vehiclesDb = require('../../models/vehiclesDB');
+const vehiclePostService = require('../../services/vehiclePostService');
 
-const vehiclesModel = vehiclesDb.createModel();
+
+
+
 
 
 class VehiclesHandler {
@@ -12,23 +14,26 @@ class VehiclesHandler {
     //     vehiclesModel.read();
     // }
 
-    // handlePost (requestBody) {
-    //     vehiclesModel.create(requestBody)
-    //         .then( result => {
-    //             return result;
-    //         })
-    //         .catch(err => throw err;
-    // }
      handlePost (req, res) {
-        if(!req.body) return res.sendStatus(400);
+        if(!this.__isValidDocument(req.body)) return res.status(400).send('Missing required fields');
 
         let postResult = async (reqBody) => {
-            return await vehiclesModel.create(reqBody);
+            return await vehiclePostService.createData(reqBody);
 
         };
         postResult(req.body)
             .then(result => res.json(result))
             .catch(err => console.error(err))
+    }
+
+    __isValidDocument (reqBody) {
+        if(!reqBody) return false;
+
+        const requiredFields = ['name', 'capacity', 'countOfGetGrain'];
+
+        let checkFields = requiredFields.filter(el => !reqBody.hasOwnProperty(el));
+        if (checkFields.length > 0) return false;
+        return true;
     }
 }
 
