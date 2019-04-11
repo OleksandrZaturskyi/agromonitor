@@ -18,7 +18,6 @@ router.get('/:id', (req, res) => {
 
 
 router.put('/:id', (req, res) => {
-    console.log(req.url);
     handler.handlePut(req, res);
 });
 

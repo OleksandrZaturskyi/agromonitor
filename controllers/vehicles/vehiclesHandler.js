@@ -44,14 +44,13 @@ class VehiclesHandler {
     }
 
     handleDelete (req, res) {
-        vehicleDeleteService.deleteData(req.params.id)
+        vehicleDeleteService.deleteData(req.params)
             .then(result => res.json(result))
             .catch(err => console.error(err))
     }
 
     handlePut (req, res) {
-        console.log(req);
-        vehiclePutService.updateData(req.params.id, req.body)
+        vehiclePutService.updateData(req.params, req.body)
             .then(result => res.json(result))
             .catch(err => console.error(err))
     }

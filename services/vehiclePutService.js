@@ -3,8 +3,8 @@
 const vehiclesDb = require('../models/vehiclesDB');
 const vehiclesModel = vehiclesDb.createModel('vehicles');
 
-async function updateData (id, data) {
-    return await vehiclesModel.update(id, data);
+async function updateData (parameters, data) {
+    return await vehiclesModel.update(parameters.id, data);
 }
 
 module.exports.updateData = updateData;

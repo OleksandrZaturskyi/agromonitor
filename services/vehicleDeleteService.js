@@ -3,8 +3,8 @@
 const vehiclesDb = require('../models/vehiclesDB');
 const vehiclesModel = vehiclesDb.createModel('vehicles');
 
-async function deleteData (id) {
-    return await vehiclesModel.delete(id);
+async function deleteData (parameters) {
+    return await vehiclesModel.delete(parameters.id);
 }
 
 module.exports.deleteData = deleteData;

@@ -15,8 +15,6 @@ class Model {
                 .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
-        let lastDoc = await collection.find().sort({"_id" : -1}).limit(1).toArray();
-        document._id = lastDoc.length ? lastDoc[0]._id + 1 : 0;
 
         return collection.insertOne(document)
             .then(result => {
@@ -25,15 +23,15 @@ class Model {
             .catch(err => console.error(err));
     }
 
-    async read (filter) {
+    async read (id) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
-
+        let filter = id ? {"_id": new mongo.ObjectId(id)} : null;
         return collection.find(filter).toArray()
                 .then(result => {
-                  client.close();
-                  return  result.length ? result : 'data not found';
+                    client.close();
+                    return  result.length ? result : 'data not found';
                 }).catch(err => console.error(err));
     }
 
@@ -43,7 +41,10 @@ class Model {
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
         return collection.updateOne({"_id": new mongo.ObjectId(id)}, {$set: data})
-            .then(result => result.ops[0])
+            .then(result => {
+                client.close();
+                return result.result;
+            })
             .catch(err => console.error(err));
     }
 
@@ -51,9 +52,11 @@ class Model {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
-        
         return collection.deleteOne({"_id": new mongo.ObjectId(id)})
-            .then(result => result.result)
+            .then(result => {
+                client.close();
+                return result.result;
+            })
             .catch(err => console.error(err));  
     }
 }
