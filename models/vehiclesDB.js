@@ -51,10 +51,10 @@ class Model {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
             .then(client => client).catch(err => console.error(err));
         let collection = await client.db('agromonitor').collection(this.collectionName);
-
+        
         return collection.deleteOne({"_id": new mongo.ObjectId(id)})
             .then(result => result.result)
-            .catch(err => console.error(err));
+            .catch(err => console.error(err));  
     }
 }
 
