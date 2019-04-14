@@ -15,12 +15,9 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     handler.handleGet(req, res);
 });
-
-
 router.put('/:id', (req, res) => {
     handler.handlePut(req, res);
 });
-
 router.delete('/:id', (req, res) => {
     handler.handleDelete(req, res);
 });

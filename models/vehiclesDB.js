@@ -1,63 +1,46 @@
-'use strict';
-
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
 const uri = "mongodb://localhost:27017/";
-
+const db = 'agromonitor';
 
 class Model {
     constructor (name) {
         this.collectionName = name;
     }
-
-    async create (document) {
-        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-                .then(client => client).catch(err => console.error(err));
-        let collection = await client.db('agromonitor').collection(this.collectionName);
-
-
-        return collection.insertOne(document)
-            .then(result => {
-                client.close();
-                return result.ops[0]})
-            .catch(err => console.error(err));
+    
+    async _connectToDB (mongoClient, dbName, collectionName) {
+        let client =  await mongoClient.connect(uri, { useNewUrlParser: true });
+        return {client: client, collection: client.db(dbName).collection(collectionName)};
     }
 
-    async read (id) {
-        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
-        let collection = await client.db('agromonitor').collection(this.collectionName);
-        let filter = id ? {"_id": new mongo.ObjectId(id)} : null;
-        return collection.find(filter).toArray()
-                .then(result => {
-                    client.close();
-                    return  result.length ? result : 'data not found';
-                }).catch(err => console.error(err));
+    async create (document) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let result = await dbConnect.collection.insertOne(document);
+        dbConnect.client.close();
+        return result.result.n;
+    }
+
+    async read (id, filter) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let result =  id ? await dbConnect.collection.findOne({"_id": new mongo.ObjectId(id)})
+            : await dbConnect.collection.find(filter || {}).toArray();
+        dbConnect.client.close();
+        if (!result || result.length < 1) return 0;
+        return result;
     }
 
     async update (id, data) {
-        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
-        let collection = await client.db('agromonitor').collection(this.collectionName);
-
-        return collection.updateOne({"_id": new mongo.ObjectId(id)}, {$set: data})
-            .then(result => {
-                client.close();
-                return result.result;
-            })
-            .catch(err => console.error(err));
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let result = await dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data});
+        dbConnect.client.close();
+        return result.result.nModified;
     }
 
     async delete (id) {
-        let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
-        let collection = await client.db('agromonitor').collection(this.collectionName);
-        return collection.deleteOne({"_id": new mongo.ObjectId(id)})
-            .then(result => {
-                client.close();
-                return result.result;
-            })
-            .catch(err => console.error(err));  
+            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+            let result = await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)});
+            dbConnect.client.close();
+            return result.result.n
     }
 }
 

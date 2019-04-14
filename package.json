@@ -14,7 +14,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "watch": "nodemon app.js"
+    "watch": "nodemon app.js",
+    "start fillDB": "node __fillDB.js",
+    "watch fillDB": "nodemon __fillDB.js"
   },
   "repository": {
     "type": "git",
