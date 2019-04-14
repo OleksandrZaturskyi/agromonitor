@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 
 app.use('/api/vehicles', vehiclesRoute);
 
-
 // Error 404 handler
 
 app.use((req, res, next) => {

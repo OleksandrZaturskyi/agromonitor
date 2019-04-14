@@ -1,25 +1,25 @@
 'use strict';
 
 const express = require('express');
-const vehiclesHandler = require('../controllers/vehicles/vehiclesHandler');
+const vehiclesController = require('../controllers/vehicles/vehiclesController');
 
 const router = express.Router();
-const handler = vehiclesHandler.createHandler();
+const controller = vehiclesController.createController();
 
 router.post('/', (req, res) => {
-    handler.handlePost(req, res);
+    controller.handlePost(req, res);
 });
 router.get('/', (req, res) => {
-    handler.handleGet(req, res);
+    controller.handleGet(req, res);
 });
 router.get('/:id', (req, res) => {
-    handler.handleGet(req, res);
+    controller.handleGet(req, res);
 });
 router.put('/:id', (req, res) => {
-    handler.handlePut(req, res);
+    controller.handlePut(req, res);
 });
 router.delete('/:id', (req, res) => {
-    handler.handleDelete(req, res);
+    controller.handleDelete(req, res);
 });
 
 module.exports = router;
