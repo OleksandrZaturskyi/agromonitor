@@ -1,0 +1,37 @@
+{
+  "name": "agromonitor",
+  "version": "0.1.0",
+  "description": "Express server for processing agricultural data",
+  "main": "app.js",
+  "dependencies": {
+    "express": "4.16.4",
+    "mongodb": "3.2.3",
+    "body-parser": "1.18.3",
+    "morgan": "1.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.10"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "watch": "nodemon app.js",
+    "start fillDB": "node __fillDB.js",
+    "watch fillDB": "nodemon __fillDB.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OleksandrZaturskyi/agromonitor.git"
+  },
+  "keywords": [
+    "agriculture",
+    "nodejs",
+    "express",
+    "rest"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OleksandrZaturskyi/agromonitor/issues"
+  },
+  "homepage": "https://github.com/OleksandrZaturskyi/agromonitor#readme"
+}
