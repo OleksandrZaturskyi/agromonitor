@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -9,8 +7,7 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const logStream = fs.createWriteStream(path.join(__dirname, 'requestLog.log'));
-
-//Routes
+const errorHandler = require('./middlewares/errorHandler');
 const vehiclesRoute = require('./routes/vehicles');
 
 //Logger
@@ -28,10 +25,7 @@ app.use((req, res, next) => {
 });
 
 //Error handler
-app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
+app.use(errorHandler);
 
 app.listen(PORT, function(){
     console.log(`Server has started at port ${PORT}`);

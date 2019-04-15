@@ -1,30 +1,24 @@
-'use strict';
-
 const vehiclePostService = require('../../services/vehiclePostService');
 const vehicleGetService = require('../../services/vehicleGetService');
 const vehiclePutService = require('../../services/vehiclePutService');
 const vehicleDeleteService = require('../../services/vehicleDeleteService');
 
-
-
-
-
-
 class VehiclesHandler {
     constructor () {}
 
-
-
-     handlePost (req, res) {
-        if(!this.__isValidDocument(req.body)) return res.status(400).send('Missing required fields');
+     handlePost (req, res, next) {
+        if(!this.__isValidDocument(req.body)) {
+            const error = new Error('Missing required fields');
+            error.statusCode = 400;
+            throw error;
+        }
 
         let postResult = async (reqBody) => {
             return await vehiclePostService.createData(reqBody);
-
         };
         postResult(req.body)
             .then(result => res.json(result))
-            .catch(err => console.error(err))
+            .catch(err => next(err))
     }
 
     __isValidDocument (reqBody) {
@@ -37,23 +31,25 @@ class VehiclesHandler {
         return true;
     }
 
-    handleGet (req, res) {
+    handleGet (req, res, next) {
         let getResult = vehicleGetService.getData(req.params);
         getResult.then(result => res.json(result))
-            .catch(err => console.error(err))
+            .catch(err => {
+                next(err);
+            })
     }
 
-    handleDelete (req, res) {
+    handleDelete (req, res, next) {
         vehicleDeleteService.deleteData(req.params.id)
             .then(result => res.json(result))
-            .catch(err => console.error(err))
+            .catch(err => next(err))
     }
 
-    handlePut (req, res) {
+    handlePut (req, res, next) {
         console.log(req);
         vehiclePutService.updateData(req.params.id, req.body)
             .then(result => res.json(result))
-            .catch(err => console.error(err))
+            .catch(err => next(err))
     }
 
 }

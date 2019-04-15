@@ -1,9 +1,6 @@
-'use strict';
-
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
-const uri = "mongodb://localhost:27017/";
-
+const uri = "mongodb://localhost:27017";
 
 class Model {
     constructor (name) {
@@ -12,7 +9,10 @@ class Model {
 
     async create (document) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-                .then(client => client).catch(err => console.error(err));
+                .then(client => client).catch(err => err => {
+                    err.status = 500;
+                    throw err;
+                });
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
         let lastDoc = await collection.find().sort({"_id" : -1}).limit(1).toArray();
@@ -22,39 +22,66 @@ class Model {
             .then(result => {
                 client.close();
                 return result.ops[0]})
-            .catch(err => console.error(err));
+            .catch(err => {
+                err.status = 500;
+                throw err;
+            });
     }
 
     async read (filter) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
+            .then(client => client).catch(err => {
+                err.status = 500;
+                throw err;
+            });
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
         return collection.find(filter).toArray()
                 .then(result => {
                   client.close();
-                  return  result.length ? result : 'data not found';
-                }).catch(err => console.error(err));
+                  if (result.length) {
+                      return result;
+                  } else {
+                      const error = new Error('data not found');
+                      error.statusCode = 404;
+                      throw error;
+                  }
+                }).catch(error => {
+                    error.statusCode = 500;
+                    throw error;
+                });
     }
 
     async update (id, data) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
+            .then(client => client).catch(err => {
+                err.status = 500;
+                throw err;
+            });
         let collection = await client.db('agromonitor').collection(this.collectionName);
 
         return collection.updateOne({"_id": new mongo.ObjectId(id)}, {$set: data})
             .then(result => result.ops[0])
-            .catch(err => console.error(err));
+            .catch(err => {
+                err.status = 500; /////////??????????
+                throw err;
+            });
     }
 
     async delete (id) {
         let client = await MongoClient.connect(uri, { useNewUrlParser: true })
-            .then(client => client).catch(err => console.error(err));
+            .then(client => client).catch(err => {
+                err.status = 500;
+                throw err;
+            });
         let collection = await client.db('agromonitor').collection(this.collectionName);
         
         return collection.deleteOne({"_id": new mongo.ObjectId(id)})
             .then(result => result.result)
-            .catch(err => console.error(err));  
+            .catch(err => {
+                err.status = 400;
+                throw err;
+            });  
     }
 }
 
