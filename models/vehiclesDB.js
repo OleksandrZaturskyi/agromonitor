@@ -14,61 +14,80 @@ class Model {
     }
 
     async create (document) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
             let result = await dbConnect.collection.insertOne(document);
-            dbConnect.client.close();
+            if (result.result.n == 0) {
+                const err= new Error('Not created')   
+                err.statusCode = 404;
+                throw err;  
+            }
             return result.result.n;
         }
         catch (error) {
-            const error = new Error('Not created');
-            error.statusCode = 400;
             throw error;
+        }
+        finally {
+            dbConnect.client.close();
         }
 
     }
 
     async read (id, filter) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
             let result =  id ? await dbConnect.collection.findOne({"_id": new mongo.ObjectId(id)})
                 : await dbConnect.collection.find(filter || {}).toArray();
-            dbConnect.client.close();
-            if (!result || result.length < 1) return 0;
+            if (!result || result.length < 1) {
+            const err= new Error('Not found')   
+            err.statusCode = 404;
+            throw err;
+            }
             return result;
         }
         catch (error) {
-            const error = new Error('Data not found');
-            error.statusCode = 404;
             throw error;
+        }
+        finally {
+            dbConnect.client.close();
         }
     }
 
     async update (id, data) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
             let result = await dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data});
-            dbConnect.client.close();
+            if (result.result.nModified == 0) {
+                const err= new Error('Not updated')   
+                err.statusCode = 404;
+                throw err;  
+            }
             return result.result.nModified;
         }
         catch (error) {
-            const error = new Error('Data not found');
-            error.statusCode = 404;
             throw error;
+        }
+        finally {
+            dbConnect.client.close();
         }
     }
 
     async delete (id) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
             let result = await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)});
-            dbConnect.client.close();
+            if (result.result.n == 0) {
+                const err= new Error('Not deleted')   
+                err.statusCode = 404;
+                throw err;  
+            }
             return result.result.n
         }
         catch (error) {
-            const error = new Error('Data not found');
-            error.statusCode = 404;
             throw error;
+        }
+        finally {
+            dbConnect.client.close();
         }
     }
 }
