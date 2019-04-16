@@ -17,12 +17,11 @@ class Model {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
             let result = await dbConnect.collection.insertOne(document);
-            if (result.result.n == 0) {
-                const err= new Error('Not created')   
+            if (result.result.n === 0) {
+                const err= new Error('Not created');
                 err.statusCode = 404;
                 throw err;  
             }
-            return result.result.n;
         }
         catch (error) {
             throw error;
@@ -33,14 +32,14 @@ class Model {
 
     }
 
-    async read (id, filter) {
+    async read (id) {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
-            let result =  id ? await dbConnect.collection.findOne({"_id": new mongo.ObjectId(id)})
-                : await dbConnect.collection.find(filter || {}).toArray();
-            if (!result || result.length < 1) {
-            const err= new Error('Not found')   
-            err.statusCode = 404;
+            let idObject = id ? {"_id": new mongo.ObjectId(id)} : null;
+            let result = idObject ? await dbConnect.collection.findOne(idObject) : await dbConnect.collection.find().toArray();
+            if (!result) {
+            const err = new Error('Wrong id');
+            err.statusCode = 400;
             throw err;
             }
             return result;
@@ -57,12 +56,15 @@ class Model {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
             let result = await dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data});
-            if (result.result.nModified == 0) {
-                const err= new Error('Not updated')   
-                err.statusCode = 404;
+            if (result.result.n === 1 && result.result.nModified === 0) {
+                const err = new Error('Already up to date');
+                err.statusCode = 400;
                 throw err;  
+            } else if (result.result.n === 0) {
+                const err = new Error('Not found');
+                err.statusCode = 404;
+                throw err;
             }
-            return result.result.nModified;
         }
         catch (error) {
             throw error;
@@ -76,12 +78,11 @@ class Model {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         try {
             let result = await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)});
-            if (result.result.n == 0) {
-                const err= new Error('Not deleted')   
+            if (result.result.n === 0) {
+                const err = new Error('Not deleted');
                 err.statusCode = 404;
                 throw err;  
             }
-            return result.result.n
         }
         catch (error) {
             throw error;
