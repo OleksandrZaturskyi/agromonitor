@@ -5,6 +5,7 @@ class VehiclesController {
     constructor () {}
 
     handlePost (req, res, next) {
+        services.validatePostReqBody(req.body);
         services.postService(req.body)
             .then(() => {
                 res.status(201).send('Successfully created')
