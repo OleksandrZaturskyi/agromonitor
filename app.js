@@ -13,6 +13,10 @@ app.use(requestLogger(logStream));
 app.use(bodyParser.json());
 app.use('/api/vehicles', vehiclesRoute);
 app.use(errorHandler);
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 app.listen(PORT, function(){
     console.log(`Server has started at port ${PORT}`);
 });
