@@ -9,21 +9,27 @@ class Model {
     }
     
     async _connectToDB (mongoClient, dbName, collectionName) {
-            let client =  await mongoClient.connect(uri, { useNewUrlParser: true });
-            let collection = client.db(dbName).collection(collectionName);
-            return {client: client, collection: collection};
+        let client =  await mongoClient.connect(uri, { useNewUrlParser: true });
+        return {client: client, collection: client.db(dbName).collection(collectionName)};
     }
 
     async create (document) {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
-            try {
-                let result = await dbConnect.collection.insertOne(document);
-                return result.result.n;
-            } catch (err) {
-                throw err;
-            } finally {
-                dbConnect.client.close();
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        try {
+            let result = await dbConnect.collection.insertOne(document);
+            if (result.result.n == 0) {
+                const err= new Error('Not created')   
+                err.statusCode = 404;
+                throw err;  
             }
+            return result.result.n;
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            dbConnect.client.close();
+        }
 
     }
 
@@ -32,32 +38,57 @@ class Model {
         try {
             let result =  id ? await dbConnect.collection.findOne({"_id": new mongo.ObjectId(id)})
                 : await dbConnect.collection.find(filter || {}).toArray();
-            if (!result) {
-                let err = new Error('Not found');
-                err.statusCode = 404;
-                throw err;
+            if (!result || result.length < 1) {
+            const err= new Error('Not found')   
+            err.statusCode = 404;
+            throw err;
             }
             return result;
-        } catch (err) {
-            throw err;
-        } finally {
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
             dbConnect.client.close();
         }
-
     }
 
     async update (id, data) {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        try {
             let result = await dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data});
-            dbConnect.client.close();
+            if (result.result.nModified == 0) {
+                const err= new Error('Not updated')   
+                err.statusCode = 404;
+                throw err;  
+            }
             return result.result.nModified;
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            dbConnect.client.close();
+        }
     }
 
     async delete (id) {
-            let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        try {
             let result = await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)});
-            dbConnect.client.close();
+            if (result.result.n == 0) {
+                const err= new Error('Not deleted')   
+                err.statusCode = 404;
+                throw err;  
+            }
             return result.result.n
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            dbConnect.client.close();
+        }
     }
 }
 
