@@ -10,10 +10,12 @@ const PORT = process.env.PORT || 3000;
 const logStream = fs.createWriteStream(path.join(__dirname, 'requestLog.log'));
 
 const vehiclesRoute = require('./routes/vehicles');
+const fieldsRoute = require('./routes/fields');
 
 app.use(requestLogger(logStream));
 app.use(bodyParser.json());
 app.use('/api/vehicles', vehiclesRoute);
+app.use('/api/fields', fieldsRoute);
 
 app.use((req, res, next) => {
     res.status(404).send('Not found');

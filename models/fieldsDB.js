@@ -7,7 +7,7 @@ class Model {
     constructor (name) {
         this.collectionName = name;
     }
-    
+
     async _connectToDB (mongoClient, dbName, collectionName) {
         let client =  await mongoClient.connect(uri, { useNewUrlParser: true });
         return {client: client, collection: client.db(dbName).collection(collectionName)};
@@ -21,17 +21,17 @@ class Model {
                 case 'delete':
                     if (result.result.n === 0) {
                         let err = new Error ("Wrong id");
-                            err.statusCode = 400;
-                            throw err;
+                        err.statusCode = 400;
+                        throw err;
                     }
-                break;
+                    break;
                 case 'read':
                     if (!result) {
                         let err = new Error ("Data not found");
-                            err.statusCode = 400;
-                            throw err;
+                        err.statusCode = 400;
+                        throw err;
                     }
-                break;
+                    break;
                 case 'update':
                     if (result.result.n === 1 && result.result.nModified === 0) {
                         const err = new Error('Already up to date');
@@ -42,7 +42,7 @@ class Model {
                         err.statusCode = 400;
                         throw err;
                     }
-                break;
+                    break;
                 default:
                     console.log('You can only pass create, read, update or delete operations as an arg')
 
