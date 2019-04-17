@@ -5,11 +5,12 @@ class VehiclesController {
     constructor () {}
 
     handlePost (req, res, next) {
+        services.validatePostReqBody(req.body);
         services.postService(req.body)
             .then(() => {
                 res.status(201).send('Vehicle successfully created')
             })
-            .catch(err => next(err));
+            .catch(err => next(err)); 
     }
 
     handleGet (req, res, next) {

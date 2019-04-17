@@ -1,4 +1,4 @@
-const vehiclesDb = require('../models/vehiclesDB');
+const vehiclesDb = require('../models/model');
 const vehiclesModel = vehiclesDb.createModel('vehicles');
 
 class VehiclesService {
