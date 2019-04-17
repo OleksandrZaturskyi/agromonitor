@@ -29,7 +29,7 @@ class FieldsController {
     }
 
     handlePut (req, res, next) {
-        services.putService(req.params.id, req.body)
+        services.putService(req.params.id, req.query, req.body)
             .then(() => {
                 res.send('Field successfully updated');
             })
