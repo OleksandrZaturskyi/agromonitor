@@ -1,5 +1,6 @@
 const garageDb = require('../models/model');
 const garageModel = garageDb.createModel('garage');
+const fieldsModel = garageDb.createModel('fields');
 
 class GarageService {
     constructor () {}
@@ -12,13 +13,22 @@ class GarageService {
         return garageModel.read(id);
     }
 
-    async putService (id, data) {
-        return garageModel.update(id, data);
+
+    async putService (id, query) {
+        let fields = await fieldsModel.read("5cb74cee7d2d4b03e0f26065");
+        let vehiclesObj = fields.vehicles;
+        let car = vehiclesObj[query._id];
+        delete vehiclesObj[query._id];
+        await fieldsModel.update("5cb74cee7d2d4b03e0f26065", {"vehicles": vehiclesObj});
+        let toUpdate = {
+            "vehicles": {
+                [query._id]: car
+            }
+        };
+        return garageModel.update(id, toUpdate);
     }
 
-    async deleteService (id) {
-        return garageModel.delete(id);
-    }
+    
 }
 
 function createService (options) {

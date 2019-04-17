@@ -8,31 +8,24 @@ class GarageController {
         services.validatePostReqBody(req.body);
         services.postService(req.body)
             .then(() => {
-                res.status(201).send('Successfully created')
+                res.status(201).send(' Garage successfully created')
             })
             .catch(err => next(err)); 
     }
 
     handleGet (req, res, next) {
-        services.getService(req.params)
+        services.getService(req.params.id)
             .then(result => {
                 res.json(result);
             })
             .catch(err => next(err));
     }
 
-    handleDelete (req, res, next) {
-        services.deleteService(req.params)
-            .then(() => {
-                res.send('Successfully deleted');
-            })
-            .catch(err => next(err));
-    }
 
     handlePut (req, res, next) {
-        services.putService(req.params, req.body)
+        services.putService(req.params.id, req.body)
             .then(() => {
-                res.send('Successfully updated');
+                res.send('Garage successfully updated');
             })
             .catch(err => next(err));
     }
