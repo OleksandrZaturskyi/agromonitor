@@ -5,6 +5,7 @@ class VehiclesService {
     constructor () {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     validatePostReqBody (reqBody) {
         const requiredFields = ['name', 'capacity', 'countOfGetGrain'];
         let result = requiredFields.reduce((acc, el) => reqBody.hasOwnProperty(el) ? acc : acc.concat(el), []);
@@ -44,6 +45,8 @@ class VehiclesService {
     
 =======
 >>>>>>> fdb8dcd9a69111951da99e58c40a9c856f9a2e56
+=======
+>>>>>>> develop
     async postService (data) {
         return vehiclesModel.create(data);
     }
