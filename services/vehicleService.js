@@ -4,49 +4,6 @@ const vehiclesModel = vehiclesDb.createModel('vehicles');
 class VehiclesService {
     constructor () {}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    validatePostReqBody (reqBody) {
-        const requiredFields = ['name', 'capacity', 'countOfGetGrain'];
-        let result = requiredFields.reduce((acc, el) => reqBody.hasOwnProperty(el) ? acc : acc.concat(el), []);
-        if (result.length > 0) {
-            let resJSON = {
-                "Error" : "Missing required fields",
-                "Missing": result,
-                "Required fields": requiredFields
-            };
-            let err = Error(JSON.stringify(resJSON));
-            err.statusCode = 400;
-            throw err;
-        }
-        const requiredTypes = {
-            name: 'string',
-            capacity: 'number',
-            countOfGetGrain: 'number'
-        };
-        let typeCheckResult = [];
-        for (let key in reqBody) {
-            if (reqBody.hasOwnProperty(key) && !(typeof reqBody[key] === requiredTypes[key])) {
-                let reqField = '${key} ${requiredTypes[key]}';
-                typeCheckResult = [...typeCheckResult, reqField];
-            }
-        }
-        if (typeCheckResult.length > 0) {
-            let resJSON = {
-                "Error" : "Wrong fields types",
-                "Correct types": typeCheckResult,
-                "Required types": requiredTypes
-            };
-            let err = Error(JSON.stringify(resJSON));
-            err.statusCode = 400;
-            throw err;
-        }
-    } 
-    
-=======
->>>>>>> fdb8dcd9a69111951da99e58c40a9c856f9a2e56
-=======
->>>>>>> develop
     async postService (data) {
         return vehiclesModel.create(data);
     }
