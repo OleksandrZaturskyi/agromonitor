@@ -1,16 +1,16 @@
-const vehiclesDb = require('../models/fieldsDB');
-const vehiclesModel = vehiclesDb.createModel('fields');
-const garageModel = vehiclesDb.createModel('garage');
+const fieldsDb = require('../models/fieldsDB');
+const fieldsModel = fieldsDb.createModel('fields');
+const garageModel = fieldsDb.createModel('garage');
 
 class VehiclesService {
     constructor () {}
 
     async postService (data) {
-        return vehiclesModel.create(data);
+        return fieldsModel.create(data);
     }
 
     async getService (id) {
-        return vehiclesModel.read(id);
+        return fieldsModel.read(id);
     }
 
     async putService (id, query) {
@@ -24,11 +24,11 @@ class VehiclesService {
                 [query._id]: car
             }
         };
-        return vehiclesModel.update(id, toUpdate);
+        return fieldsModel.update(id, toUpdate);
     }
 
     async deleteService (id) {
-        return vehiclesModel.delete(id);
+        return fieldsModel.delete(id);
     }
 }
 
