@@ -13,82 +13,70 @@ class Model {
         return {client: client, collection: client.db(dbName).collection(collectionName)};
     }
 
-    async create (document) {
-        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+    async _tryCatchFinally (codeToCheck, operation, client) {
         try {
-            let result = await dbConnect.collection.insertOne(document);
-            if (result.result.n == 0) {
-                const err= new Error('Not created')   
-                err.statusCode = 404;
-                throw err;  
-            }
-            return result.result.n;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            dbConnect.client.close();
-        }
+            let result = await codeToCheck;
+            switch (operation) {
+                case 'create':
+                case 'delete':
+                    if (result.result.n === 0) {
+                        let err = new Error ("Wrong id");
+                            err.statusCode = 400;
+                            throw err;
+                    }
+                break;
+                case 'read':
+                    if (!result) {
+                        let err = new Error ("Data not found");
+                            err.statusCode = 400;
+                            throw err;
+                    }
+                break;
+                case 'update':
+                    if (result.result.n === 1 && result.result.nModified === 0) {
+                        const err = new Error('Already up to date');
+                        err.statusCode = 400;
+                        throw err;
+                    } else if (result.result.n === 0) {
+                        const err = new Error('Wrong id');
+                        err.statusCode = 400;
+                        throw err;
+                    }
+                break;
+                default:
+                    console.log('You can only pass create, read, update or delete operations as an arg')
 
-    }
 
-    async read (id, filter) {
-        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
-        try {
-            let result =  id ? await dbConnect.collection.findOne({"_id": new mongo.ObjectId(id)})
-                : await dbConnect.collection.find(filter || {}).toArray();
-            if (!result || result.length < 1) {
-            const err= new Error('Not found')   
-            err.statusCode = 404;
-            throw err;
             }
             return result;
+        } catch (err) {
+          throw err;
+        } finally {
+            client.close()
         }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            dbConnect.client.close();
-        }
+    }
+
+    async create (document) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        return this._tryCatchFinally(dbConnect.collection.insertOne(document),'create', dbConnect.client)
+    }
+
+    async read (id) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        let idObject = id ? {"_id": new mongo.ObjectId(id)} : null;
+        return idObject ? this._tryCatchFinally(dbConnect.collection.findOne(idObject),'read', dbConnect.client)
+            : this._tryCatchFinally(dbConnect.collection.find().toArray(),'read', dbConnect.client) ;
+
     }
 
     async update (id, data) {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
-        try {
-            let result = await dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data});
-            if (result.result.nModified == 0) {
-                const err= new Error('Not updated')   
-                err.statusCode = 404;
-                throw err;  
-            }
-            return result.result.nModified;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            dbConnect.client.close();
-        }
+        return this._tryCatchFinally(dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data}), 'update', dbConnect.client)
     }
 
     async delete (id) {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
-        try {
-            let result = await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)});
-            if (result.result.n == 0) {
-                const err= new Error('Not deleted')   
-                err.statusCode = 404;
-                throw err;  
-            }
-            return result.result.n
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            dbConnect.client.close();
-        }
+        return this._tryCatchFinally(await dbConnect.collection.deleteOne({"_id": new mongo.ObjectID(id)}), 'delete', dbConnect.client)
     }
 }
 
