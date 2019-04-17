@@ -2,9 +2,16 @@ const express = require('express');
 const vehiclesController = require('../controllers/vehicles/vehiclesController');
 const router = express.Router();
 const controller = vehiclesController.createController();
-const validateReqBody = require('../middlewares/vehiclesPostValidator').validateReqBody;
+const validateReqBody = require('../middlewares/PostBodyValidator').validateReqBody;
+const requiredFields = ['name', 'capacity', 'countOfGetGrain'];
+const length = 3;
+const requiredTypes = {
+    name: 'string',
+    capacity: 'number',
+    countOfGetGrain: 'number'
+};
 
-router.post('/', validateReqBody);
+router.post('/', validateReqBody(requiredFields, length, requiredTypes));
 router.post('/', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);

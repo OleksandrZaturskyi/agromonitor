@@ -1,14 +1,15 @@
 const ValidationError = require('../modules/errorsConctructors').ValidationError;
-function validateReqBody(req, res, next) {
-    const reqBody = req.body;
-    validateRequiredFields(reqBody);
-    validateFieldsQuantity(reqBody);
-    validateFieldsType(reqBody);
-    next();
+function validateReqBody(requiredFields, requiredFieldsQuantity, requiredTypes) {
+    return function (req, res, next) {
+        const reqBody = req.body;
+        if (requiredFields) validateRequiredFields(reqBody, requiredFields);
+        if (requiredFieldsQuantity) validateFieldsQuantity(reqBody, requiredFieldsQuantity);
+        if (requiredTypes) validateFieldsType(reqBody, requiredTypes);
+        next();
+    }
 }
 
-function validateRequiredFields (reqBody) {
-    const requiredFields = ['name', 'capacity', 'countOfGetGrain'];
+function validateRequiredFields (reqBody, requiredFields) {
     let result = requiredFields.reduce((acc, el) => reqBody.hasOwnProperty(el) ? acc : acc.concat(el), []);
     if (result.length > 0) {
         let resJSON = {
@@ -19,8 +20,7 @@ function validateRequiredFields (reqBody) {
     }
 }
 
-function validateFieldsQuantity (reqBody) {
-    let length = 3;
+function validateFieldsQuantity (reqBody, length) {
     for (let key in reqBody) {
         length--;
     }
@@ -29,12 +29,7 @@ function validateFieldsQuantity (reqBody) {
     }
 }
 
-function validateFieldsType (reqBody) {
-    const requiredTypes = {
-        name: 'string',
-        capacity: 'number',
-        countOfGetGrain: 'number'
-    };
+function validateFieldsType (reqBody, requiredTypes) {
     let typeCheckResult = [];
     for (let key in reqBody) {
         if (reqBody.hasOwnProperty(key) && !(typeof reqBody[key] === requiredTypes[key])) {
