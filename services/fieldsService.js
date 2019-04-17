@@ -1,6 +1,6 @@
-const fieldsDb = require('../models/fieldsDB');
-const fieldsModel = fieldsDb.createModel('fields');
-const garageModel = fieldsDb.createModel('garage');
+const model = require('../models/model');
+const fieldsModel = model.createModel('fields');
+const garageModel = model.createModel('garage');
 
 class VehiclesService {
     constructor () {}
