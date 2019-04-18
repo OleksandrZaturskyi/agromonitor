@@ -1,7 +1,7 @@
-const fieldsService = require('../../services/fieldsService');
-const services = fieldsService.createService();
+const vehicleService = require('../../services/vehicleService');
+const services = vehicleService.createService();
 
-class FieldsController {
+class VehiclesController {
     constructor () {}
 
     handlePost (req, res, next) {
@@ -38,7 +38,7 @@ class FieldsController {
 }
 
 function createController (options) {
-    return new FieldsController(options);
+    return new VehiclesController(options);
 }
 
 module.exports.createController = createController;
