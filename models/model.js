@@ -17,7 +17,6 @@ class Model {
         try {
             let result = await codeToCheck;
             switch (operation) {
-                case 'create':
                 case 'delete':
                     if (result.result.n === 0) {
                         let err = new Error ("Wrong id");

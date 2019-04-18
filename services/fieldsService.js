@@ -14,12 +14,16 @@ class VehiclesService {
     }
 
     async putService (id, query) {
-        let garage = await garageModel.read("5cb74cee7d2d4b03e0f26065");
+        let garage = await garageModel.read("5cb844e248c68a090064cb65");
+        let grainAtField = (await fieldsModel.read(id)).countOfGrain;
         let vehiclesObj = garage.vehicles;
         let car = vehiclesObj[query._id];
+        car.countOfGetGrain = grainAtField > car.capacity ? car.capacity : grainAtField;
+        let grainLeft = grainAtField > car.capacity ? grainAtField - car.capacity : 0;
         delete vehiclesObj[query._id];
-        await garageModel.update("5cb74cee7d2d4b03e0f26065", {"vehicles": vehiclesObj});
+        await garageModel.update("5cb844e248c68a090064cb65", {"vehicles": vehiclesObj});
         let toUpdate = {
+            "countOfGrain": grainLeft,
             "vehicles": {
                 [query._id]: car
             }
