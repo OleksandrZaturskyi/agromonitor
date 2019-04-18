@@ -15,6 +15,6 @@ router.post('/', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);
 router.put('/:id', controller.handlePut);
-router.delete('/:id', controller.handleDelete);
+
 
 module.exports = router;
