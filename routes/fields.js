@@ -4,17 +4,17 @@ const router = express.Router();
 const controller = fieldsController.createController();
 const validateReqBody = require('../middlewares/postBodyValidator').validateReqBody;
 
-const requiredFields = ['countOfGrain', 'vehicles'];
-const length = 2;
+const requiredFields = ['countOfGrain'];
+const length = 1;
 const requiredTypes = {
     countOfGrain: 'number',
-    vehicles: 'object'
 };
 
 router.post('/', validateReqBody(requiredFields, length, requiredTypes));
 router.post('/', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);
+router.put('/:id', validateReqBody(requiredFields, length, requiredTypes));
 router.put('/:id', controller.handlePut);
 router.delete('/:id', controller.handleDelete);
 

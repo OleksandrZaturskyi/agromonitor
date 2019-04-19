@@ -68,6 +68,11 @@ class Model {
 
     }
 
+    async readByIDsArray (idsArray) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        return this._tryCatchFinally(dbConnect.collection.find({_id: { $in: idsArray.map(el => new mongo.ObjectId(el))}}).toArray(),'read', dbConnect.client) ;
+    }
+
     async update (id, data) {
         let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
         return this._tryCatchFinally(dbConnect.collection.updateMany({"_id": new mongo.ObjectId(id)}, {$set:data}), 'update', dbConnect.client)
