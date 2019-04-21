@@ -15,11 +15,11 @@ class GarageService {
 
 
     async putService (id, query) {
-        let fields = await fieldsModel.read("5cb74cee7d2d4b03e0f26065");
+        let fields = await fieldsModel.read("5cb84ec535d88c2dacca1260");
         let vehiclesObj = fields.vehicles;
         let car = vehiclesObj[query._id];
         delete vehiclesObj[query._id];
-        await fieldsModel.update("5cb74cee7d2d4b03e0f26065", {"vehicles": vehiclesObj});
+        await fieldsModel.update("5cb84ec535d88c2dacca1260", {"vehicles": vehiclesObj});
         let toUpdate = {
             "vehicles": {
                 [query._id]: car

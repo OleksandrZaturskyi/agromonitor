@@ -17,7 +17,6 @@ class Model {
         try {
             let result = await codeToCheck;
             switch (operation) {
-                case 'create':
                 case 'delete':
                     if (result.result.n === 0) {
                         let err = new Error ("Wrong id");
@@ -67,6 +66,11 @@ class Model {
         return idObject ? this._tryCatchFinally(dbConnect.collection.findOne(idObject),'read', dbConnect.client)
             : this._tryCatchFinally(dbConnect.collection.find().toArray(),'read', dbConnect.client) ;
 
+    }
+
+    async readByIDsArray (idsArray) {
+        let dbConnect = await this._connectToDB(MongoClient, db, this.collectionName);
+        return this._tryCatchFinally(dbConnect.collection.find({_id: { $in: idsArray.map(el => new mongo.ObjectId(el))}}).toArray(),'read', dbConnect.client) ;
     }
 
     async update (id, data) {

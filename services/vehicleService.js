@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 const vehiclesDb = require('../models/model');
 const vehiclesModel = vehiclesDb.createModel('vehicles');
 const garageModel = vehiclesDb.createModel('garage');
+=======
+const model = require('../models/model');
+const vehiclesModel = model.createModel('vehicles');
+const garageModel = model.createModel('garage');
+>>>>>>> develop
 
 class VehiclesService {
     constructor () {}
 
+<<<<<<< HEAD
     async postService (data) {
         return vehiclesModel.create(data);
         //console.log(vehicle);
@@ -20,6 +27,13 @@ class VehiclesService {
         };
         return garageModel.update(id, toUpdate);
         //return vehiclesModel.create(data);
+=======
+    async postService (data, garageId) {
+        let result = await vehiclesModel.create(data);
+        let vehiclesInGarage = (await  garageModel.read(garageId)).vehicles;
+        await garageModel.update(garageId, {vehicles: [...vehiclesInGarage, result.ops[0]._id]});
+        return result;
+>>>>>>> develop
     }
 
     async getService (id) {

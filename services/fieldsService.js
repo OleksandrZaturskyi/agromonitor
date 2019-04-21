@@ -1,4 +1,5 @@
 const model = require('../models/model');
+const vehiclesModel = model.createModel('vehicles');
 const fieldsModel = model.createModel('fields');
 const garageModel = model.createModel('garage');
 
@@ -9,22 +10,24 @@ class VehiclesService {
         return fieldsModel.create(data);
     }
 
-    async getService (id) {
-        return fieldsModel.read(id);
+    async getService (id, action) {
+        if (id && action === 'getAllVehiclesFromOneField') {
+            let vehiclesAtField = (await fieldsModel.read(id)).vehicles;
+            return vehiclesModel.readByIDsArray(vehiclesAtField);
+        } else if (!id && action === 'getAllVehicles') {
+            let vehiclesAtFields = (await fieldsModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
+            return vehiclesModel.readByIDsArray(vehiclesAtFields);
+        } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
+            return fieldsModel.read(id);
+        }
+        let err = new Error('Bad request');
+        err.statusCode = 400;
+        throw err;
+
     }
 
     async putService (id, query) {
-        let garage = await garageModel.read("5cb74cee7d2d4b03e0f26065");
-        let vehiclesObj = garage.vehicles;
-        let car = vehiclesObj[query._id];
-        delete vehiclesObj[query._id];
-        await garageModel.update("5cb74cee7d2d4b03e0f26065", {"vehicles": vehiclesObj});
-        let toUpdate = {
-            "vehicles": {
-                [query._id]: car
-            }
-        };
-        return fieldsModel.update(id, toUpdate);
+        return fieldsModel.update(id, query);
     }
 
     async deleteService (id) {
