@@ -1,13 +1,13 @@
-const fieldsService = require('../../services/fieldsService');
-const services = fieldsService.createService();
+const vehiclesService = require('../../services/vehiclesService');
+const services = vehiclesService.createService('vehicles');
 
-class FieldsController {
+class VehiclesController {
     constructor () {}
 
     handlePost (req, res, next) {
         services.postService(req.body)
             .then(() => {
-                res.status(201).send('Field successfully created')
+                res.status(201).send('Vehicle  successfully created')
             })
             .catch(err => next(err));
     }
@@ -23,7 +23,7 @@ class FieldsController {
     handleDelete (req, res, next) {
         services.deleteService(req.params.id)
             .then(() => {
-                res.send('Field successfully deleted');
+                res.send('Vehicle successfully deleted');
             })
             .catch(err => next(err));
     }
@@ -31,14 +31,14 @@ class FieldsController {
     handlePut (req, res, next) {
         services.putService(req.params.id, req.query, req.body)
             .then(() => {
-                res.send('Field successfully updated');
+                res.send('Vehicle successfully updated');
             })
             .catch(err => next(err));
     }
 }
 
 function createController (options) {
-    return new FieldsController(options);
+    return new VehiclesController(options);
 }
 
 module.exports.createController = createController;
