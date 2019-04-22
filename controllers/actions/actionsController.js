@@ -5,11 +5,28 @@ class ActionsController {
     constructor () {}
 
     handlePost (req, res, next) {
-        services.postService(req.body)
-        .then(result => {
-            res.status(201).json({"Message": "Successfully performed", "Item": result.ops[0]});
+        switch(req.body.action) {
+            case 'moveVehicleToField':
+            services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId)
+            .then(() => {
+                res.status(201).json({"Message": "Successfully performed"});
             })
-            .catch(err => next(err)); 
+            .catch(err => next(err));
+
+            case 'moveVehicleToGarage':
+            services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId)
+            .then(() => {
+                res.status(201).json({"Message": "Successfully performed"});
+            })
+            .catch(err => next(err));
+
+            case 'takeGrainFromField' :
+
+            case 'moveGrainToWarehouse':
+
+            default:
+        }
+         
     }
 }
 
