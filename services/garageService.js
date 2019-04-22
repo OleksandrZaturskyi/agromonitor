@@ -25,7 +25,14 @@ class GarageService {
     }
 
     async putService (id, data) {
-        return garageModel.update(id, data);
+        if (data.action === "deleteVehicle") {
+            let updatedVehicles = (await garageModel.read(id)).vehicles.filter(el => el.toString() !== data._id);
+            return garageModel.update(id, {"vehicles": updatedVehicles});
+        } else {
+            let err = new Error('Not allowed action');
+            err.statusCode = 400;
+            throw err;
+        }
     }
     
     async deleteService (id) {

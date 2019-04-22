@@ -9,8 +9,8 @@ class ActionsService {
     constructor () {}
     async takeGrainFromField (data) {
         let field = await fieldsModel.read(data.fromId);
-        if (field.vehicles.indexOf(data.vehicleId) === -1) {
-            let err =  new Error (`{"info": "No such car at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+        if (field.vehicles.filter(el => el.toString() === data.vehicleId).length === 0) {
+            let err =  new Error (`{"info": "No such vehicle at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
             err.statusCode = 400;
             throw err;
         }
@@ -42,8 +42,8 @@ class ActionsService {
     }
     async moveGrainToWarehouse (data) {
         let field = await fieldsModel.read(data.fromId);
-        if (field.vehicles.indexOf(data.vehicleId) === -1) {
-            let err =  new Error (`{"info": "No such car at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+        if (field.vehicles.filter(el => el.toString() === data.vehicleId).length === 0) {
+            let err =  new Error (`{"info": "No such vehicle at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
             err.statusCode = 400;
             throw err;
         }
