@@ -5,6 +5,8 @@ class ActionsController {
     constructor () {}
 
     handlePost (req, res, next) {
+        let operationResult = null;
+
         switch(req.body.action) {
             case 'moveVehicleToField':
             services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId)
@@ -20,15 +22,18 @@ class ActionsController {
             })
             .catch(err => next(err));
 
-            case 'takeGrainFromField' :
-
-            case 'moveGrainToWarehouse':
-
-            default:
+            case "takeGrainFromField":
+                operationResult = services.takeGrainFromField(req.body);
+            case "moveGrainToWarehouse":
+                operationResult = services.moveGrainToWarehouse(req.body);
         }
-         
+        operationResult.then(result => {
+            res.status(200).json({"result": result});
+        })
+            .catch(err => next(err));
     }
 }
+
 
 function createController (options) {
     return new ActionsController(options);

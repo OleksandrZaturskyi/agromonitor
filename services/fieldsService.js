@@ -1,7 +1,6 @@
 const model = require('../models/model');
 const vehiclesModel = model.createModel('vehicles');
 const fieldsModel = model.createModel('fields');
-const garageModel = model.createModel('garage');
 
 class FieldsService {
     constructor () {}
@@ -23,7 +22,6 @@ class FieldsService {
         let err = new Error('Bad request');
         err.statusCode = 400;
         throw err;
-
     }
 
     async putService (id, query) {

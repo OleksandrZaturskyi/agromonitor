@@ -29,6 +29,14 @@ class GarageController {
             .catch(err => next(err));
     }
 
+    handleDelete (req, res, next) {
+        services.deleteService(req.params.id)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => next(err));
+    }
+
 }
 
 function createController (options) {

@@ -12,7 +12,7 @@ const vehiclesRoute = require('./routes/vehicles');
 const fieldsRoute = require('./routes/fields');
 const warehouseRoute = require('./routes/warehouse');
 const garageRoute = require('./routes/garage');
-const actionsRoute = require('./routes/actions');
+const actionsRoute = require("./routes/actions");
 
 app.use(requestLogger(logStream));
 app.use(bodyParser.json());
@@ -26,7 +26,6 @@ app.use('/api/actions', actionsRoute);
 app.use((req, res, next) => {
     res.status(404).send('Not found');
 });
-
 app.use(errorHandler);
 app.use(function(err, req, res, next) {
     console.error(err.stack);
