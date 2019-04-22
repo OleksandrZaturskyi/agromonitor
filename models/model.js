@@ -17,6 +17,8 @@ class Model {
         try {
             let result = await codeToCheck;
             switch (operation) {
+                case 'create':
+                break;
                 case 'delete':
                     if (result.result.n === 0) {
                         let err = new Error ("Wrong id");
@@ -43,9 +45,9 @@ class Model {
                     }
                 break;
                 default:
-                    console.log('You can only pass create, read, update or delete operations as an arg')
-
-
+                    let err = new Error('You can only pass create, read, update or delete operations as an arg');
+                    err.statusCode = 400;
+                    throw err;
             }
             return result;
         } catch (err) {

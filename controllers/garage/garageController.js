@@ -13,7 +13,7 @@ class GarageController {
     }
 
     handleGet (req, res, next) {
-        services.getService(req.params.id)
+        services.getService(req.params.id, req.query.action)
             .then(result => {
                 res.json(result);
             })

@@ -9,8 +9,19 @@ class GarageService {
         return garageModel.create({...data, "vehicles": []});
     }
 
-    async getService (id) {
-        return garageModel.read(id);
+    async getService (id, action) {
+        if (id && action === 'getAllVehiclesFromOneGarage') {
+            let vehiclesInGarage = (await fieldsModel.read(id)).vehicles;
+            return garageModel.readByIDsArray(vehiclesInGarage);
+        } else if (!id && action === 'getAllVehicles') {
+            let vehiclesInGarages = (await fieldsModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
+            return garageModel.readByIDsArray(vehiclesInGarages);
+        } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
+            return garageModel.read(id);
+        }
+        let err = new Error('Bad request');
+        err.statusCode = 400;
+        throw err;
     }
 
     async putService (id, data) {

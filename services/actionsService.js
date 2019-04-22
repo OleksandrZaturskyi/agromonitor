@@ -2,13 +2,19 @@ const model = require('../models/model');
 const garageModel = model.createModel('garage');
 const fieldsModel = model.createModel('fields');
 const vehiclesModel = model.createModel('vehicles');
-const warehousesModel = model.createModel('warehouses');
+const warehousesModel = model.createModel('warehouse');
 
 
 class ActionsService {
     constructor () {}
     async takeGrainFromField (data) {
-        let grainAtField = (await fieldsModel.read(data.fromId)).countOfGrain;
+        let field = await fieldsModel.read(data.fromId);
+        if (field.vehicles.indexOf(data.vehicleId) === -1) {
+            let err =  new Error (`{"info": "No such car at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+            err.statusCode = 400;
+            throw err;
+        }
+        let grainAtField = field.countOfGrain;
         if (!grainAtField) {
             let err =  new Error (`{"info": "No grain left", "fieldId": ${data.fromId}}`);
             err.statusCode = 400;
@@ -35,6 +41,12 @@ class ActionsService {
 
     }
     async moveGrainToWarehouse (data) {
+        let field = await fieldsModel.read(data.fromId);
+        if (field.vehicles.indexOf(data.vehicleId) === -1) {
+            let err =  new Error (`{"info": "No such car at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+            err.statusCode = 400;
+            throw err;
+        }
         let grainInWarehouse = (await warehousesModel.read(data.toId)).countOfGrain;
         let grainInVehicle = (await vehiclesModel.read(data.vehicleId)).countOfGetGrain;
         if (grainInVehicle <= 0) {
@@ -44,10 +56,12 @@ class ActionsService {
         }
         grainInWarehouse += grainInVehicle;
         await warehousesModel.update(data.toId, {"countOfGrain": grainInWarehouse});
-        await vehiclesModel.update(data.vehicleId, {"countOfGetGrain": 0})
+        await vehiclesModel.update(data.vehicleId, {"countOfGetGrain": 0});
+        return 'Grain now in warehouse'
     }
 
     async moveVehicleToField (vehicleId, fromId, toId ) {
+
         let vehiclesInGarage = (await garageModel.read(fromId)).vehicles;
         let vehiclesOnField = (await fieldsModel.read(toId)).vehicles;
 
@@ -68,7 +82,7 @@ class ActionsService {
         }       
     }
 
-    async moveVehicleToGarage (vehicleId, fromId, toId) { 
+    async moveVehicleToGarage (vehicleId, fromId, toId) {
         let vehiclesInGarage = (await garageModel.read(toId)).vehicles;
         let vehiclesOnField = (await fieldsModel.read(fromId)).vehicles;
 
@@ -77,15 +91,16 @@ class ActionsService {
                 if(item == vehicleId) {
                     vehiclesInGarage.push(item);
                     vehiclesOnField.splice(vehiclesOnField.indexOf(item), 1);
-                    return garageModel.update(fromId, {"vehicles" : vehiclesInGarage}), 
-                    fieldsModel.update(toId, {"vehicles" : vehiclesOnField});
+                    await garageModel.update(toId, {"vehicles" : vehiclesInGarage});
+                    await fieldsModel.update(fromId, {"vehicles" : vehiclesOnField});
+                    return 'Vehicle now in garage'
                 }
             }
         }
         catch(err) {
-        err = new Error('Bad request. There is not vehicle with this id on the field');
-        err.statusCode = 400;
-        throw err;
+            err = new Error('Bad request. There is not vehicle with this id on the field');
+            err.statusCode = 400;
+            throw err;
         }
     }
     
