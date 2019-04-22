@@ -6,7 +6,7 @@ class VehiclesController {
     constructor () {}
 
     handlePost (req, res, next) {
-        services.postService(req.body, "5cbc5722f1cfbe3388c0d39c")
+        services.postService(req.body, "5cbddc325068ff2428d2d93b")
             .then(result => {
                 res.status(201).json({"Message": "Successfully created", "Item": result.ops[0]})
             })

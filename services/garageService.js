@@ -5,11 +5,15 @@ class GarageService {
     constructor () {}
 
     async postService (data) {
-        return garageModel.create(data);
+        return garageModel.create({...data, "vehicles": []});
     }
 
     async getService (id) {
         return garageModel.read(id);
+    }
+
+    async deleteService (id) {
+        return garageModel.delete(id);
     }
 
     async putService (id, data) {
