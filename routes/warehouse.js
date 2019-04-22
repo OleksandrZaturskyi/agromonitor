@@ -7,8 +7,7 @@ const validateReqBody = require('../middlewares/postBodyValidator').validateReqB
 const requiredFields = ['countOfGrain', 'vehicles'];
 const length = 2;
 const requiredTypes = {
-    countOfGrain: 'number',
-    vehicles: 'object'
+    countOfGrain: 'number'
 };
 
 router.post('/', validateReqBody(requiredFields, length, requiredTypes));
@@ -16,6 +15,7 @@ router.post('/', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);
 router.put('/:id', controller.handlePut);
+router.delete('/:id', controller.handleDelete);
 
 
 module.exports = router;

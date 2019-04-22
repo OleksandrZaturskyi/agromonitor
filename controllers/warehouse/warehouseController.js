@@ -20,6 +20,13 @@ class WarehouseController {
             .catch(err => next(err));
     }
 
+    handleDelete (req, res, next) {
+        services.deleteService(req.params.id)
+            .then(() => {
+                res.json({"Message": "successfully deleted", "_id": req.params.id});
+            })
+            .catch(err => next(err));
+    }
 
     handlePut (req, res, next) {
         services.putService(req.params.id, req.body)
