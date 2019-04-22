@@ -9,23 +9,21 @@ class ActionsController {
 
         switch(req.body.action) {
             case 'moveVehicleToField':
-            services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId)
-            .then(() => {
-                res.status(201).json({"Message": "Successfully performed"});
-            })
-            .catch(err => next(err));
-
+                operationResult = services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId);
+            break;
             case 'moveVehicleToGarage':
-            services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId)
-            .then(() => {
-                res.status(201).json({"Message": "Successfully performed"});
-            })
-            .catch(err => next(err));
-
+                operationResult = services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId);
+            break;
             case "takeGrainFromField":
                 operationResult = services.takeGrainFromField(req.body);
+            break;
             case "moveGrainToWarehouse":
                 operationResult = services.moveGrainToWarehouse(req.body);
+            break;
+            default:
+                let err = new Error('Cannot perform action');
+                err.statusCode = 400;
+                throw err;
         }
         operationResult.then(result => {
             res.status(200).json({"result": result});
