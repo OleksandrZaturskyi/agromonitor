@@ -1,5 +1,7 @@
 const warehouseDb = require('../models/model');
 const warehouseModel = warehouseDb.createModel('warehouse');
+const vehiclesModel = warehouseDb.createModel('vehicles');
+const fieldsModel = warehouseDb.createModel('fields');
 
 class WarehouseService {
     constructor () {}

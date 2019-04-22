@@ -6,7 +6,22 @@ class ActionsController {
 
     handlePost (req, res, next) {
         let operationResult = null;
-        switch (req.body.action) {
+
+        switch(req.body.action) {
+            case 'moveVehicleToField':
+            services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId)
+            .then(() => {
+                res.status(201).json({"Message": "Successfully performed"});
+            })
+            .catch(err => next(err));
+
+            case 'moveVehicleToGarage':
+            services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId)
+            .then(() => {
+                res.status(201).json({"Message": "Successfully performed"});
+            })
+            .catch(err => next(err));
+
             case "takeGrainFromField":
                 operationResult = services.takeGrainFromField(req.body);
             case "moveGrainToWarehouse":
@@ -18,6 +33,7 @@ class ActionsController {
             .catch(err => next(err));
     }
 }
+
 
 function createController (options) {
     return new ActionsController(options);

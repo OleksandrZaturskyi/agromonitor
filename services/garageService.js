@@ -1,5 +1,6 @@
 const garageDb = require('../models/model');
 const garageModel = garageDb.createModel('garage');
+const fieldsModel = garageDb.createModel('fields');
 
 class GarageService {
     constructor () {}
@@ -12,14 +13,13 @@ class GarageService {
         return garageModel.read(id);
     }
 
-    async deleteService (id) {
-        return garageModel.delete(id);
-    }
-
     async putService (id, data) {
         return garageModel.update(id, data);
     }
     
+    async deleteService (id) {
+        return garageModel.delete(id);
+    }
 }
 
 function createService (options) {
