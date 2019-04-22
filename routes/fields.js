@@ -14,7 +14,6 @@ router.post('/', validateReqBody(requiredFields, length, requiredTypes));
 router.post('/', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);
-router.put('/:id', validateReqBody(requiredFields, length, requiredTypes));
 router.put('/:id', controller.handlePut);
 router.delete('/:id', controller.handleDelete);
 

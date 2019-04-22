@@ -31,7 +31,7 @@ class FieldsController {
     handlePut (req, res, next) {
         services.putService(req.params.id, req.body)
             .then(() => {
-                res.json({"Message": "successfully updated", "_id": req.params.id, "updated fields": req.body});
+                res.json({"Message": "successfully updated"});
             })
             .catch(err => next(err));
     }

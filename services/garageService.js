@@ -1,4 +1,5 @@
 const garageDb = require('../models/model');
+const vehiclesModel = garageDb.createModel('vehicles');
 const garageModel = garageDb.createModel('garage');
 const fieldsModel = garageDb.createModel('fields');
 
@@ -27,6 +28,7 @@ class GarageService {
     async putService (id, data) {
         if (data.action === "deleteVehicle") {
             let updatedVehicles = (await garageModel.read(id)).vehicles.filter(el => el.toString() !== data._id);
+            await vehiclesModel.delete(data._id);
             return garageModel.update(id, {"vehicles": updatedVehicles});
         } else {
             let err = new Error('Not allowed action');

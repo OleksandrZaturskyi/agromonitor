@@ -27,6 +27,7 @@ class FieldsService {
     async putService (id, data) {
         if (data.action === "deleteVehicle") {
             let updatedVehicles = (await fieldsModel.read(id)).vehicles.filter(el => el.toString() !== data._id);
+            await vehiclesModel.delete(data._id);
             return fieldsModel.update(id, {"vehicles": updatedVehicles});
         } else {
             let err = new Error('Not allowed action');
