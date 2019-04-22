@@ -23,7 +23,6 @@ class FieldsService {
         let err = new Error('Bad request');
         err.statusCode = 400;
         throw err;
-
     }
 
     async putService (id, query) {

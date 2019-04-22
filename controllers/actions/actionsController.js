@@ -5,11 +5,17 @@ class ActionsController {
     constructor () {}
 
     handlePost (req, res, next) {
-        services.postService(req.body)
-        .then(result => {
-            res.status(201).json({"Message": "Successfully performed", "Item": result.ops[0]});
-            })
-            .catch(err => next(err)); 
+        let operationResult = null;
+        switch (req.body.action) {
+            case "takeGrainFromField":
+                operationResult = services.takeGrainFromField(req.body);
+            case "moveGrainToWarehouse":
+                operationResult = services.moveGrainToWarehouse(req.body);
+        }
+        operationResult.then(result => {
+            res.status(200).json({"result": result});
+        })
+            .catch(err => next(err));
     }
 }
 
