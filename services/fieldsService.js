@@ -7,7 +7,7 @@ class VehiclesService {
     constructor () {}
 
     async postService (data) {
-        return fieldsModel.create(data);
+        return fieldsModel.create({...data, "vehicles": []});
     }
 
     async getService (id, action) {
