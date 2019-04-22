@@ -4,8 +4,8 @@ const router = express.Router();
 const controller = warehouseController.createController();
 const validateReqBody = require('../middlewares/postBodyValidator').validateReqBody;
 
-const requiredFields = ['countOfGrain', 'vehicles'];
-const length = 2;
+const requiredFields = ['countOfGrain'];
+const length = 1;
 const requiredTypes = {
     countOfGrain: 'number'
 };
