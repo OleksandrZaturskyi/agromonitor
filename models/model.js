@@ -27,7 +27,7 @@ class Model {
                 case 'read':
                     if (!result) {
                         let err = new Error ("Data not found");
-                            err.statusCode = 400;
+                            err.statusCode = 404;
                             throw err;
                     }
                 break;

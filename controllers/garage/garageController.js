@@ -6,8 +6,8 @@ class GarageController {
 
     handlePost (req, res, next) {
         services.postService(req.body)
-            .then(() => {
-                res.status(201).send(' Garage successfully created')
+        .then(result => {
+            res.status(201).json({"Message": "Successfully created", "Item": result.ops[0]});
             })
             .catch(err => next(err)); 
     }

@@ -17,8 +17,8 @@ app.use(requestLogger(logStream));
 app.use(bodyParser.json());
 
 app.use('/api/vehicles', vehiclesRoute);
-// app.use('/api/warehouse', warehouseRoute);
-// app.use('/api/garage', garageRoute);
+app.use('/api/warehouse', warehouseRoute);
+app.use('/api/garage', garageRoute);
 app.use('/api/fields', fieldsRoute);
 
 app.use((req, res, next) => {
