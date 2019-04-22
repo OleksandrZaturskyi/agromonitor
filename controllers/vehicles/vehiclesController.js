@@ -1,4 +1,4 @@
-const vehiclesService = require('../../services/vehiclesService');
+const vehiclesService = require('../../services/vehicleService');
 const services = vehiclesService.createService('vehicles');
 
 
@@ -30,7 +30,6 @@ class VehiclesController {
     }
 
     handlePut (req, res, next) {
-
         services.putService(req.params.id, req.body)
             .then(()  => {
                 res.json({"Message": "successfully updated", "_id": req.params.id, "updated fields": req.body});

@@ -5,7 +5,6 @@ const garageModel = model.createModel('garage');
 class VehiclesService {
     constructor () {}
 
-
     async postService (data, garageId) {
         let result = await vehiclesModel.create(data);
         let vehiclesInGarage = (await  garageModel.read(garageId)).vehicles;
