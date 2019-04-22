@@ -3,7 +3,7 @@ const vehiclesModel = model.createModel('vehicles');
 const fieldsModel = model.createModel('fields');
 const garageModel = model.createModel('garage');
 
-class VehiclesService {
+class FieldsService {
     constructor () {}
 
     async postService (data) {
@@ -36,7 +36,7 @@ class VehiclesService {
 }
 
 function createService (options) {
-    return new VehiclesService(options);
+    return new FieldsService(options);
 }
 
 module.exports.createService = createService;
