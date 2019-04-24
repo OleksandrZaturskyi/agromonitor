@@ -25,7 +25,7 @@ class FieldsController {
     async handleDelete (req, res, next) {
         try {
             const result = await services.deleteService(req.params.id);
-            res.json({"Message": "successfully deleted", "_id": result});
+            res.json({"Message": "successfully deleted", "result": result});
         } catch (err) {
             next(err);
         }

@@ -42,4 +42,4 @@ class FieldsService {
     }
 }
 
-module.exports.createService = () => new FieldsService(options);
+module.exports.createService = () => new FieldsService();

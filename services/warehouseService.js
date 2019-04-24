@@ -1,7 +1,5 @@
 const warehouseDb = require('../models/model');
 const warehouseModel = warehouseDb.createModel('warehouse');
-const vehiclesModel = warehouseDb.createModel('vehicles');
-const fieldsModel = warehouseDb.createModel('fields');
 
 class WarehouseService {
     constructor () {}
@@ -11,7 +9,7 @@ class WarehouseService {
     }
 
     async getService (id) {
-            return warehouseModel.read(id);
+        return warehouseModel.read(id);
     }
 
     async putService (id, data) {
@@ -22,8 +20,5 @@ class WarehouseService {
         return warehouseModel.delete(id);
     }
 }
-function createService (options) {
-    return new WarehouseService(options);
-}
 
-module.exports.createService = createService;
+module.exports.createService = () => new WarehouseService();
