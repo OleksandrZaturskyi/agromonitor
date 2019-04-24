@@ -7,26 +7,27 @@ const warehousesModel = model.createModel('warehouse');
 
 class ActionsService {
     constructor () {}
-    async takeGrainFromField (data) {
-        let field = await fieldsModel.read(data.fromId);
-        if (field.vehicles.filter(el => el.toString() === data.vehicleId).length === 0) {
-            let err =  new Error (`{"info": "No such vehicle at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+    async takeGrainFromField (vehicleId, fromId) {
+        console.log(vehicleId, fromId);
+        const field = await fieldsModel.read(fromId);
+        if (field.vehicles.filter(el => el.toString() === vehicleId).length === 0) {
+            const err =  new Error ('No such vehicle at this field');
             err.statusCode = 400;
             throw err;
         }
         let grainAtField = field.countOfGrain;
         if (!grainAtField) {
-            let err =  new Error (`{"info": "No grain left", "fieldId": ${data.fromId}}`);
+            const err =  new Error ('No grain left');
             err.statusCode = 400;
             throw err;
         }
-        let vehicle = await vehiclesModel.read(data.vehicleId);
+        const vehicle = await vehiclesModel.read(vehicleId);
         if (vehicle.countOfGetGrain === vehicle.capacity) {
-            let err =  new Error (`{"info": "This vehicle cant take more grain", "vehicleId": ${data.vehicleId}}`);
+            const err =  new Error ('This vehicle cant take more grain');
             err.statusCode = 400;
             throw err;
         }
-        let vehicleCanTake = vehicle.capacity - vehicle.countOfGetGrain;
+        const vehicleCanTake = vehicle.capacity - vehicle.countOfGetGrain;
         if (vehicleCanTake <= grainAtField) {
             grainAtField = grainAtField - vehicleCanTake;
             vehicle.countOfGetGrain = vehicle.countOfGetGrain + vehicleCanTake;
@@ -35,43 +36,51 @@ class ActionsService {
             grainAtField = 0;
 
         }
-        await fieldsModel.update(data.fromId, {"countOfGrain": grainAtField});
-        await vehiclesModel.update(data.vehicleId, vehicle);
-        return "Vehicle successfully took grain"
+        await fieldsModel.update(fromId, {"countOfGrain": grainAtField});
+        await vehiclesModel.update(vehicleId, vehicle);
+        return {
+            "message": "Vehicle successfully took grain",
+            "grainInVehicle": vehicle.countOfGetGrain,
+            "grainLeft": grainAtField
+        };
 
     }
-    async moveGrainToWarehouse (data) {
-        let field = await fieldsModel.read(data.fromId);
-        if (field.vehicles.filter(el => el.toString() === data.vehicleId).length === 0) {
-            let err =  new Error (`{"info": "No such vehicle at this field", "fieldId": ${data.fromId}}, "vehicleId": ${data.vehicleId}`);
+    async moveGrainToWarehouse (vehicleId, fromId, toId) {
+        const field = await fieldsModel.read(fromId);
+        if (field.vehicles.filter(el => el.toString() === vehicleId).length === 0) {
+            const err =  new Error ('No such vehicle at this field');
             err.statusCode = 400;
             throw err;
         }
-        let grainInWarehouse = (await warehousesModel.read(data.toId)).countOfGrain;
-        let grainInVehicle = (await vehiclesModel.read(data.vehicleId)).countOfGetGrain;
+        let grainInWarehouse = (await warehousesModel.read(toId)).countOfGrain;
+        let grainInVehicle = (await vehiclesModel.read(vehicleId)).countOfGetGrain;
         if (grainInVehicle <= 0) {
-            let err =  new Error (`{"info": "This vehicle is empty", "vehicleId": ${data.vehicleId}}`);
+            let err =  new Error ('This vehicle is empty');
             err.statusCode = 400;
             throw err;
         }
         grainInWarehouse += grainInVehicle;
-        await warehousesModel.update(data.toId, {"countOfGrain": grainInWarehouse});
-        await vehiclesModel.update(data.vehicleId, {"countOfGetGrain": 0});
-        return 'Grain now in warehouse'
+        await warehousesModel.update(toId, {"countOfGrain": grainInWarehouse});
+        await vehiclesModel.update(vehicleId, {"countOfGetGrain": 0});
+        return {
+            "message": "Grain now in warehouse",
+            "grainInWarehouse": grainInWarehouse
+        };
     }
 
     async moveVehicleToField (vehicleId, fromId, toId ) {
 
-        let vehiclesInGarage = (await garageModel.read(fromId)).vehicles;
-        let vehiclesOnField = (await fieldsModel.read(toId)).vehicles;
+        const vehiclesInGarage = (await garageModel.read(fromId)).vehicles;
+        const vehiclesOnField = (await fieldsModel.read(toId)).vehicles;
 
         try {
             for (let item of vehiclesInGarage) {
                 if(item == vehicleId) {
                     vehiclesOnField.push(item);
                     vehiclesInGarage.splice(vehiclesInGarage.indexOf(item), 1);
-                    return garageModel.update(fromId, {"vehicles" : vehiclesInGarage}), 
-                    fieldsModel.update(toId, {"vehicles" : vehiclesOnField});
+                    await garageModel.update(fromId, {"vehicles" : vehiclesInGarage});
+                    await fieldsModel.update(toId, {"vehicles" : vehiclesOnField});
+                    return {"message": "Vehicle now at field"};
                 }
             }
         }
@@ -83,8 +92,8 @@ class ActionsService {
     }
 
     async moveVehicleToGarage (vehicleId, fromId, toId) {
-        let vehiclesInGarage = (await garageModel.read(toId)).vehicles;
-        let vehiclesOnField = (await fieldsModel.read(fromId)).vehicles;
+        const vehiclesInGarage = (await garageModel.read(toId)).vehicles;
+        const vehiclesOnField = (await fieldsModel.read(fromId)).vehicles;
 
         try {
             for (let item of vehiclesOnField) {
@@ -93,7 +102,7 @@ class ActionsService {
                     vehiclesOnField.splice(vehiclesOnField.indexOf(item), 1);
                     await garageModel.update(toId, {"vehicles" : vehiclesInGarage});
                     await fieldsModel.update(fromId, {"vehicles" : vehiclesOnField});
-                    return 'Vehicle now in garage'
+                    return {"message": "Vehicle now in garage"};
                 }
             }
         }
@@ -106,8 +115,4 @@ class ActionsService {
     
 }
 
-function createService (options) {
-    return new ActionsService(options);
-}
-
-module.exports.createService = createService;
+module.exports.createService = () => new ActionsService();

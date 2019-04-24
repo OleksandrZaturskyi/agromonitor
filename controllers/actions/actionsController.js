@@ -4,9 +4,8 @@ const services = actionsService.createService();
 class ActionsController {
     constructor () {}
 
-    handlePost (req, res, next) {
+    async handlePost (req, res, next) {
         let operationResult = null;
-
         switch(req.body.action) {
             case 'moveVehicleToField':
                 operationResult = services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId);
@@ -15,26 +14,24 @@ class ActionsController {
                 operationResult = services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId);
             break;
             case "takeGrainFromField":
-                operationResult = services.takeGrainFromField(req.body);
+                operationResult = services.takeGrainFromField(req.body.vehicleId, req.body.fromId);
             break;
             case "moveGrainToWarehouse":
-                operationResult = services.moveGrainToWarehouse(req.body);
+                operationResult = services.moveGrainToWarehouse(req.body.vehicleId, req.body.fromId, req.body.toId);
             break;
-            default:
-                let err = new Error('Cannot perform action');
+        }
+        try {
+            if (!operationResult) {
+                const err = new Error('Not allowed action');
                 err.statusCode = 400;
                 throw err;
+            }
+            const result = await operationResult;
+            res.status(200).json(result);
+        } catch (err) {
+            next(err);
         }
-        operationResult.then(result => {
-            res.status(200).json({"result": result});
-        })
-            .catch(err => next(err));
     }
 }
 
-
-function createController (options) {
-    return new ActionsController(options);
-}
-
-module.exports.createController = createController;
+module.exports.createController = () => new ActionsController();
