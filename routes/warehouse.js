@@ -3,7 +3,6 @@ const warehouseController = require('../controllers/warehouse/warehouseControlle
 const router = express.Router();
 const controller = warehouseController.createController();
 const validateReqBody = require('../middlewares/postBodyValidator').validateReqBody;
-const allowedFieldsValidator = require('../middlewares/allowedFieldsValidator').allowedFieldsValidator;
 
 const requiredFields = ['countOfGrain'];
 const length = 1;
