@@ -6,18 +6,18 @@ class ActionsController {
 
     async handlePost (req, res, next) {
         let operationResult = null;
-        switch(req.body.action) {
+        switch(req.params.action) {
             case 'moveVehicleToField':
-                operationResult = services.moveVehicleToField(req.body.vehicleId, req.body.fromId, req.body.toId);
+                operationResult = services.moveVehicleToField(req.params.idVehicle, req.body.fromId, req.body.toId);
             break;
             case 'moveVehicleToGarage':
-                operationResult = services.moveVehicleToGarage(req.body.vehicleId, req.body.fromId, req.body.toId);
+                operationResult = services.moveVehicleToGarage(req.params.idVehicle, req.body.fromId, req.body.toId);
             break;
             case "takeGrainFromField":
-                operationResult = services.takeGrainFromField(req.body.vehicleId, req.body.fromId);
+                operationResult = services.takeGrainFromField(req.params.idVehicle, req.body.fromId);
             break;
             case "moveGrainToWarehouse":
-                operationResult = services.moveGrainToWarehouse(req.body.vehicleId, req.body.fromId, req.body.toId);
+                operationResult = services.moveGrainToWarehouse(req.params.idVehicle, req.body.fromId, req.body.toId);
             break;
         }
         try {

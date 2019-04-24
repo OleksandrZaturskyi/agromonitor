@@ -4,16 +4,14 @@ const router = express.Router();
 const controller = actionsController.createController();
 const validateReqBody = require('../middlewares/postBodyValidator').validateReqBody;
 
-const requiredFields = ['action', 'vehicleId', 'fromId', 'toId'];
-const length = 4;
+const requiredFields = ['fromId', 'toId'];
+const length = 2;
 const requiredTypes = {
-    action: 'string',
-    vehicleId: 'string',
     fromId: 'string',
     toId: 'string'
 };
 
 router.post('/', validateReqBody(requiredFields, length, requiredTypes));
-router.post('/', controller.handlePost);
+router.post('/:idVehicle/:action', controller.handlePost);
 
 module.exports = router;
