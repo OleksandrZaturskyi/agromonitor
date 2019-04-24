@@ -3,7 +3,12 @@ function errorHandler(err, req, res, next) {
   if (res.headersSent) {
     return next(err);
   }
-  if (!err.statusCode) err.statusCode = 500; 
-  res.status(err.statusCode).json(err.message);
+  if (!err.statusCode) err.statusCode = 500;
+  const errReport = {
+    "message": err.message,
+    ...err.errorInfo
+  };
+  res.status(err.statusCode).json(errReport);
 }
+
 module.exports = errorHandler;

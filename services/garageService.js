@@ -16,7 +16,7 @@ class GarageService {
         } else if (!id && action === 'getAllVehicles') {
             const vehiclesInGarages = (await garageModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
             return vehiclesModel.readByIDsArray(vehiclesInGarages);
-        } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
+        } else if (!action) {
             return garageModel.read(id);
         }
         let err = new Error('Bad request');

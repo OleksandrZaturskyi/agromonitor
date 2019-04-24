@@ -16,7 +16,7 @@ class FieldsService {
         } else if (!id && action === 'getAllVehicles') {
             const vehiclesAtFields = (await fieldsModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
             return vehiclesModel.readByIDsArray(vehiclesAtFields);
-        } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
+        } else if (!action) {
             return fieldsModel.read(id);
         }
         let err = new Error('Bad request');
