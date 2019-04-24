@@ -19,22 +19,23 @@ class GarageService {
         } else if (!action) {
             return garageModel.read(id);
         }
-        let err = new Error('Bad request');
+        const err = new Error('Bad request');
         err.statusCode = 400;
         throw err;
     }
 
-    async putService (id, data) {
+    async updateService (id, data) {
         if (data.action === "deleteVehicle") {
             const garageVehicles = (await garageModel.read(id)).vehicles;
             const updatedVehicles = garageVehicles.filter(el => el.toString() !== data._id);
             await vehiclesModel.delete(data._id);
             return garageModel.update(id, {"vehicles": updatedVehicles});
-        } else {
-            let err = new Error('Not allowed action');
-            err.statusCode = 400;
-            throw err;
+        } else if (!data.action) {
+            return garageModel.update(id, data);
         }
+        const err = new Error('Not allowed action');
+        err.statusCode = 400;
+        throw err;
     }
     
     async deleteService (id) {

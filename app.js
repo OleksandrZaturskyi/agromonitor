@@ -18,13 +18,13 @@ app.use(requestLogger(logStream));
 app.use(bodyParser.json());
 
 app.use('/api/vehicles', vehiclesRoute);
-app.use('/api/warehouse', warehouseRoute);
-app.use('/api/garage', garageRoute);
+app.use('/api/warehouses', warehouseRoute);
+app.use('/api/garages', garageRoute);
 app.use('/api/fields', fieldsRoute);
 app.use('/api/actions', actionsRoute);
 
 app.use((req, res, next) => {
-    res.status(404).send('Not found');
+    res.status(404).json({"message": "Wrong url"});
 });
 app.use(errorHandler);
 app.use(function(err, req, res, next) {

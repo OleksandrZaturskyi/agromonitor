@@ -30,19 +30,27 @@ function validateFieldsQuantity (reqBody, length) {
 }
 
 function validateFieldsType (reqBody, requiredTypes) {
-    let typeCheckResult = [];
+    let typeCheck = 0;
+    let resultOfCheck = {};
     for (let key in reqBody) {
-        if (reqBody.hasOwnProperty(key) && !(typeof reqBody[key] === requiredTypes[key])) {
-            let reqField = `${key} ${requiredTypes[key]}`;
-            typeCheckResult = [...typeCheckResult, reqField];
+        if (reqBody.hasOwnProperty(key) && requiredTypes[key] === 'array') {
+            if (!Array.isArray(reqBody[key])) {
+                let reqField = {[key]: requiredTypes[key]};
+                resultOfCheck = {...resultOfCheck, reqField};
+                typeCheck ++;
+            }
+        } else if (reqBody.hasOwnProperty(key) && !(typeof reqBody[key] === requiredTypes[key])) {
+            let reqField = {[key]: requiredTypes[key]};
+            resultOfCheck = {...resultOfCheck, reqField};
+            typeCheck ++;
         }
     }
-    if (typeCheckResult.length > 0) {
+    if (typeCheck > 0) {
         let resJSON = {
-            "Correct types": typeCheckResult,
+            "Correct types": resultOfCheck,
             "Required types": requiredTypes
         };
-        throw new ValidationError('WRONG REQUEST', 'Wrong types of some fields', 400, JSON.stringify(resJSON));
+        throw new ValidationError('WRONG REQUEST', 'Wrong types of some fields', 400, resJSON);
     }
 }
 

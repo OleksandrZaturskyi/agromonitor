@@ -31,9 +31,9 @@ class GarageController {
         }
     }
 
-    async handlePut (req, res, next) {
+    async handleUpdate (req, res, next) {
         try {
-            const result = await services.putService(req.params.id, req.body);
+            const result = await services.updateService(req.params.id, req.body);
             res.json({"Message": "Garage successfully updated", "result": result});
         } catch (err) {
             next(err);

@@ -31,7 +31,7 @@ class WarehouseController {
         }
     }
 
-    async handlePut (req, res, next) {
+    async handleUpdate (req, res, next) {
         try {
             const result = await  services.putService(req.params.id, req.body);
             res.json({"Message": "successfully updated", "result": result});

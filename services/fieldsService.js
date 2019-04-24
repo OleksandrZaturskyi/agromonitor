@@ -24,17 +24,18 @@ class FieldsService {
         throw err;
     }
 
-    async putService (id, data) {
+    async updateService (id, data) {
         if (data.action === "deleteVehicle") {
             const vehiclesAtField = (await fieldsModel.read(id)).vehicles;
             const updatedVehicles = vehiclesAtField.filter(el => el.toString() !== data._id);
             await vehiclesModel.delete(data._id);
             return fieldsModel.update(id, {"vehicles": updatedVehicles});
-        } else {
-            const err = new Error('Not allowed action');
-            err.statusCode = 400;
-            throw err;
+        } else if (!data.action) {
+            return fieldsModel.update(id, data);
         }
+        const err = new Error('Not allowed action');
+        err.statusCode = 400;
+        throw err;
     }
 
     async deleteService (id) {
