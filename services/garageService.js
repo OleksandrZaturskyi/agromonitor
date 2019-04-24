@@ -1,7 +1,6 @@
 const garageDb = require('../models/model');
 const vehiclesModel = garageDb.createModel('vehicles');
 const garageModel = garageDb.createModel('garage');
-const fieldsModel = garageDb.createModel('fields');
 
 class GarageService {
     constructor () {}
@@ -12,10 +11,10 @@ class GarageService {
 
     async getService (id, action) {
         if (id && action === 'getAllVehiclesFromOneGarage') {
-            let vehiclesInGarage = (await garageModel.read(id)).vehicles;
+            const vehiclesInGarage = (await garageModel.read(id)).vehicles;
             return vehiclesModel.readByIDsArray(vehiclesInGarage);
         } else if (!id && action === 'getAllVehicles') {
-            let vehiclesInGarages = (await garageModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
+            const vehiclesInGarages = (await garageModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
             return vehiclesModel.readByIDsArray(vehiclesInGarages);
         } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
             return garageModel.read(id);
@@ -27,7 +26,8 @@ class GarageService {
 
     async putService (id, data) {
         if (data.action === "deleteVehicle") {
-            let updatedVehicles = (await garageModel.read(id)).vehicles.filter(el => el.toString() !== data._id);
+            const garageVehicles = (await garageModel.read(id)).vehicles;
+            const updatedVehicles = garageVehicles.filter(el => el.toString() !== data._id);
             await vehiclesModel.delete(data._id);
             return garageModel.update(id, {"vehicles": updatedVehicles});
         } else {
@@ -42,8 +42,4 @@ class GarageService {
     }
 }
 
-function createService (options) {
-    return new GarageService(options);
-}
-
-module.exports.createService = createService;
+module.exports.createService = () => new GarageService();

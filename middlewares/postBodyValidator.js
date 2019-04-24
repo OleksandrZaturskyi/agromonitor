@@ -3,7 +3,7 @@ function validateReqBody(requiredFields, requiredFieldsQuantity, requiredTypes) 
     return function (req, res, next) {
         const reqBody = req.body;
         if (requiredFields) validateRequiredFields(reqBody, requiredFields);
-        if (requiredFieldsQuantity) validateFieldsQuantity(reqBody, requiredFieldsQuantity);
+        if (requiredFieldsQuantity === 0 || requiredFieldsQuantity) validateFieldsQuantity(reqBody, requiredFieldsQuantity);
         if (requiredTypes) validateFieldsType(reqBody, requiredTypes);
         next();
     }
