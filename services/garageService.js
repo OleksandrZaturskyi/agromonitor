@@ -12,11 +12,11 @@ class GarageService {
 
     async getService (id, action) {
         if (id && action === 'getAllVehiclesFromOneGarage') {
-            let vehiclesInGarage = (await fieldsModel.read(id)).vehicles;
-            return garageModel.readByIDsArray(vehiclesInGarage);
+            let vehiclesInGarage = (await garageModel.read(id)).vehicles;
+            return vehiclesModel.readByIDsArray(vehiclesInGarage);
         } else if (!id && action === 'getAllVehicles') {
-            let vehiclesInGarages = (await fieldsModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
-            return garageModel.readByIDsArray(vehiclesInGarages);
+            let vehiclesInGarages = (await garageModel.read()).reduce((acc, el) => acc.concat(el.vehicles), []);
+            return vehiclesModel.readByIDsArray(vehiclesInGarages);
         } else if (action !== 'getAllVehiclesFromOneField' && action !== 'getAllVehicles') {
             return garageModel.read(id);
         }

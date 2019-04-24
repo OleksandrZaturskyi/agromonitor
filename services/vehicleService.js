@@ -6,8 +6,8 @@ class VehiclesService {
     constructor () {}
 
     async postService (data, garageId) {
-        let result = await vehiclesModel.create(data);
-        let vehiclesInGarage = (await  garageModel.read(garageId)).vehicles;
+        const result = await vehiclesModel.create(data);
+        const vehiclesInGarage = (await  garageModel.read(garageId)).vehicles;
         await garageModel.update(garageId, {vehicles: [...vehiclesInGarage, result.ops[0]._id]});
         return result;
     }
@@ -25,8 +25,4 @@ class VehiclesService {
     }
 }
 
-function createService (options) {
-    return new VehiclesService(options);
-}
-
-module.exports.createService = createService;
+module.exports.createService = () => new VehiclesService();

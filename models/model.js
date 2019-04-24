@@ -94,6 +94,4 @@ class Model {
     }
 }
 
-module.exports.createModel = (options) => {
-    return new Model(options);
-};
+module.exports.createModel = (options) => new Model(options);
