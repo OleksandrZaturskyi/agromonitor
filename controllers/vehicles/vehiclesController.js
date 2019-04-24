@@ -7,7 +7,7 @@ class VehiclesController {
 
     async handlePost (req, res, next) {
         try {
-            const result = await services.postService(req.body, "5cbee042c65be011986cf8bf");
+            const result = await services.postService(req.body, req.query.garageId);
             res.status(201).json({"Message": "Successfully created", "Item": result.ops[0]});
         } catch (err) {
             next(err);
@@ -26,7 +26,7 @@ class VehiclesController {
     async handleDelete (req, res, next) {
         try {
             const result = await services.deleteService(req.params.id);
-            res.json({"Message": "successfully deleted", "_id": result});
+            res.json({"Message": "successfully deleted", "result": result});
         } catch (err) {
             next (err);
         }
