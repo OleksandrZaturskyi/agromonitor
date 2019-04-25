@@ -72,8 +72,13 @@ class ActionsService {
 
         const vehiclesInGarage = (await garageModel.read(fromId)).vehicles;
         const vehiclesOnField = (await fieldsModel.read(toId)).vehicles;
-
+        console.log(vehiclesInGarage.indexOf(vehicleId) );
         try {
+            if (vehiclesInGarage.filter(el => el.toString() === vehicleId).length === 0) {
+                const err = new Error('Bad request. There is not vehicle with this id in the garage');
+                err.statusCode = 400;
+                throw err;
+            }
             for (let item of vehiclesInGarage) {
                 if(item == vehicleId) {
                     vehiclesOnField.push(item);
@@ -85,9 +90,7 @@ class ActionsService {
             }
         }
         catch(err) {
-        err = new Error('Bad request. There is not vehicle with this id in the garage');
-        err.statusCode = 400;
-        throw err;
+            throw err;
         }       
     }
 
@@ -96,6 +99,11 @@ class ActionsService {
         const vehiclesOnField = (await fieldsModel.read(fromId)).vehicles;
 
         try {
+            if (vehiclesOnField.filter(el => el.toString() === vehicleId).length === 0) {
+                const err = new Error('Bad request. There is not vehicle with this id on the field');
+                err.statusCode = 400;
+                throw err;
+            }
             for (let item of vehiclesOnField) {
                 if(item == vehicleId) {
                     vehiclesInGarage.push(item);
@@ -107,8 +115,6 @@ class ActionsService {
             }
         }
         catch(err) {
-            err = new Error('Bad request. There is not vehicle with this id on the field');
-            err.statusCode = 400;
             throw err;
         }
     }
