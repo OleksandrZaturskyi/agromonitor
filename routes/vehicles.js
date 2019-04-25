@@ -14,8 +14,8 @@ const requiredTypes = {
 };
 
 
-router.post('/', validateReqBody(requiredFields, length, requiredTypes));
-router.post('/', controller.handlePost);
+router.post('/:garageId', validateReqBody(requiredFields, length, requiredTypes));
+router.post('/:garageId', controller.handlePost);
 router.get('/', controller.handleGet);
 router.get('/:id', controller.handleGet);
 router.put('/:id', validateReqBody(requiredFields, length, requiredTypes));

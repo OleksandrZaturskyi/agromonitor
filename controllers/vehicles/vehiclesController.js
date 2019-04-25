@@ -7,7 +7,7 @@ class VehiclesController {
 
     async handlePost (req, res, next) {
         try {
-            const result = await services.postService(req.body, req.query.garageId);
+            const result = await services.postService(req.body, req.params.garageId);
             res.status(201).json({"Message": "Successfully created", "Item": result.ops[0]});
         } catch (err) {
             next(err);
