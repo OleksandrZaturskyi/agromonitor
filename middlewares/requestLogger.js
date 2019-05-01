@@ -14,5 +14,6 @@ function requestLogger (streamObj) {
         }
         next();
     }
-};
+}
+
 module.exports = requestLogger;

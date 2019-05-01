@@ -1,24 +1,28 @@
-const vehiclesDb = require('../models/vehiclesDB');
-const vehiclesModel = vehiclesDb.createModel('vehicles');
+const model = require('../models/model');
+const vehiclesModel = model.createModel('vehicles');
+const garageModel = model.createModel('garage');
 
 class VehiclesService {
     constructor () {}
-    async postService (data) {
-        return vehiclesModel.create(data);
+
+    async postService (data, garageId) {
+        const result = await vehiclesModel.create(data);
+        const vehiclesInGarage = (await  garageModel.read(garageId)).vehicles;
+        await garageModel.update(garageId, {vehicles: [...vehiclesInGarage, result.ops[0]._id]});
+        return result;
     }
-    async getService (params) {
-        return vehiclesModel.read(params.id)
+
+    async getService (id) {
+            return vehiclesModel.read(id);
     }
-    async putService (params, data) {
-        return vehiclesModel.update(params.id, data);
+
+    async putService (id, data) {
+        return vehiclesModel.update(id, data);
     }
-    async deleteService (params) {
-        return vehiclesModel.delete(params.id);
+
+    async deleteService (id) {
+        return vehiclesModel.delete(id);
     }
 }
 
-function createService (options) {
-    return new VehiclesService(options);
-}
-
-module.exports.createService = createService;
+module.exports.createService = () => new VehiclesService();

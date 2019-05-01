@@ -1,13 +1,12 @@
-const vehiclesService = require('../../services/vehicleService');
-const services = vehiclesService.createService('vehicles');
+const warehouseService = require('../../services/warehouseService');
+const services = warehouseService.createService();
 
-
-class VehiclesController {
+class WarehouseController {
     constructor () {}
 
     async handlePost (req, res, next) {
         try {
-            const result = await services.postService(req.body, req.params.garageId);
+            const result = await services.postService(req.body);
             res.status(201).json({"Message": "Successfully created", "Item": result.ops[0]});
         } catch (err) {
             next(err);
@@ -28,18 +27,18 @@ class VehiclesController {
             const result = await services.deleteService(req.params.id);
             res.json({"Message": "successfully deleted", "result": result});
         } catch (err) {
-            next (err);
+            next(err);
         }
     }
 
     async handleUpdate (req, res, next) {
         try {
-            const result = await services.putService(req.params.id, req.body);
-            res.json({"Message": "successfully updated", "updated fields": req.body, "result": result});
+            const result = await  services.putService(req.params.id, req.body);
+            res.json({"Message": "successfully updated", "result": result});
         } catch (err) {
             next(err);
         }
     }
 }
 
-module.exports.createController = () =>  new VehiclesController();
+module.exports.createController = () => new WarehouseController();
